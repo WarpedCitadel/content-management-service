@@ -2,7 +2,7 @@ package com.warpedcitadel.contentmanagementservice.trending.model;
 
 public class TrendingGamesModel {
 
-    private String fileUUID;
+    private String gameProfileUUID;
     private String coverImgUUID;
     private String title;
     private String shortDesc;
@@ -14,10 +14,10 @@ public class TrendingGamesModel {
 
     }
 
-    public TrendingGamesModel(String fileUUID, String coverImgUUID, String title,
+    public TrendingGamesModel(String gameProfileUUID, String coverImgUUID, String title,
                               String shortDesc, String genre, String createdDtm) {
 
-        this.fileUUID = fileUUID;
+        this.gameProfileUUID = gameProfileUUID;
         this.coverImgUUID = coverImgUUID;
         this.title = title;
         this.shortDesc = shortDesc;
@@ -26,8 +26,8 @@ public class TrendingGamesModel {
     }
 
 
-    public String getFileUUID() {
-        return fileUUID;
+    public String getGameProfileUUID() {
+        return gameProfileUUID;
     }
 
     public String getCoverImgUUID() {
@@ -51,8 +51,8 @@ public class TrendingGamesModel {
     }
 
 
-    public void setFileUUID(String fileUUID) {
-        this.fileUUID = fileUUID;
+    public void setGameProfileUUID(String gameProfileUUID) {
+        this.gameProfileUUID = gameProfileUUID;
     }
 
     public void setCoverImgUUID(String coverImgUUID) {

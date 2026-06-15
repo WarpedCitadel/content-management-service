@@ -47,7 +47,7 @@ public class TrendingRepository {
             while (resultSet.next()) {
 
                 TrendingGamesModel game = new TrendingGamesModel(
-                        resultSet.getString("file_uuid"),
+                        resultSet.getString("game_profile_uuid"),
                         resultSet.getString("img_uuid"),
                         resultSet.getString("title"),
                         resultSet.getString("short_desc"),
