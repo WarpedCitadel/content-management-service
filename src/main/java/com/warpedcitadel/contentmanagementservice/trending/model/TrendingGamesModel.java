@@ -1,6 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.trending.model;
 
-public class TrendingModel {
+public class TrendingGamesModel {
 
     private String fileUUID;
     private String coverImgUUID;
@@ -10,12 +10,12 @@ public class TrendingModel {
     private String createdDtm;
 
 
-    public TrendingModel() {
+    public TrendingGamesModel() {
 
     }
 
-    public TrendingModel(String fileUUID, String coverImgUUID, String title,
-                  String shortDesc, String genre, String createdDtm) {
+    public TrendingGamesModel(String fileUUID, String coverImgUUID, String title,
+                              String shortDesc, String genre, String createdDtm) {
 
         this.fileUUID = fileUUID;
         this.coverImgUUID = coverImgUUID;

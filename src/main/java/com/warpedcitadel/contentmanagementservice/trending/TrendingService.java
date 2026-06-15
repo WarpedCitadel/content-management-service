@@ -1,15 +1,17 @@
 package com.warpedcitadel.contentmanagementservice.trending;
 
+import com.warpedcitadel.contentmanagementservice.trending.dto.GameGenresDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SearchAttributesDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SlicedResponse;
-import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingDto;
+import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingGamesDto;
 import com.warpedcitadel.contentmanagementservice.trending.model.SearchAttributesModel;
-import com.warpedcitadel.contentmanagementservice.trending.model.TrendingModel;
+import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -22,7 +24,7 @@ public class TrendingService {
     }
 
 
-    protected TrendingDto getGameProfiles(Pageable pageable, SearchAttributesDto attributesDto) {
+    protected TrendingGamesDto getGameProfiles(Pageable pageable, SearchAttributesDto attributesDto) {
 
         int offSet = pageable.getPageNumber() * pageable.getPageSize();
         int limit = pageable.getPageSize();
@@ -52,8 +54,18 @@ public class TrendingService {
         attributesList.add(limit + 1);
         attributesList.add(offSet);
 
-        Slice<TrendingModel> trendingGameList = trendingRepository.getTrendingGames(pageable, attributesList);
-        SlicedResponse<TrendingModel> filterData = new SlicedResponse<>(trendingGameList);
-        return new TrendingDto(filterData);
+        Slice<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(pageable, attributesList);
+        SlicedResponse<TrendingGamesModel> filterData = new SlicedResponse<>(trendingGameList);
+        return new TrendingGamesDto(filterData);
+    }
+
+
+    protected GameGenresDto getGameCategories() {
+
+        HashMap<Integer, String> genres = trendingRepository.getGameGenres();
+
+        return new GameGenresDto(
+                genres
+        );
     }
 }

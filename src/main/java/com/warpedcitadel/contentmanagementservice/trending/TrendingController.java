@@ -2,8 +2,9 @@ package com.warpedcitadel.contentmanagementservice.trending;
 
 
 import com.warpedcitadel.contentmanagementservice.payload.ApiResponse;
+import com.warpedcitadel.contentmanagementservice.trending.dto.GameGenresDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SearchAttributesDto;
-import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingDto;
+import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingGamesDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +27,28 @@ public class TrendingController {
     }
 
     @GetMapping("/GetTrendingGames")
-    public ResponseEntity<ApiResponse<TrendingDto>> getTrendingGames(SearchAttributesDto attributes,
+    public ResponseEntity<ApiResponse<TrendingGamesDto>> getTrendingGames(SearchAttributesDto attributes,
                                                                 Pageable pageable, WebRequest request) {
 
-        TrendingDto data = trendingService.getGameProfiles(pageable, attributes);
-        ApiResponse<TrendingDto> response = new ApiResponse<>("Trending games",
+        TrendingGamesDto data = trendingService.getGameProfiles(pageable, attributes);
+        ApiResponse<TrendingGamesDto> response = new ApiResponse<>("Trending games",
                 HttpStatus.OK.value(),
                 data,
                 request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/GetGameCategories")
+    public ResponseEntity<ApiResponse<GameGenresDto>> getGameGenres(WebRequest request) {
+
+        GameGenresDto categories = trendingService.getGameCategories();
+        ApiResponse<GameGenresDto> response = new ApiResponse<>("Game Genres",
+                HttpStatus.OK.value(),
+                categories,
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+        return  new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

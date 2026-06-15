@@ -1,6 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.trending;
 
-import com.warpedcitadel.contentmanagementservice.trending.model.TrendingModel;
+import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
 import com.warpedcitadel.contentmanagementservice.util.SQLFileReader;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -8,12 +8,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 @Repository
 public class TrendingRepository {
@@ -27,11 +23,11 @@ public class TrendingRepository {
     }
 
 
-    protected Slice<TrendingModel> getTrendingGames(Pageable pageable, List<Object> attributesList) {
+    protected Slice<TrendingGamesModel> getTrendingGames(Pageable pageable, List<Object> attributesList) {
 
         String selectSQL = loadSQL.loadSQL("/trending/select--get_trending_games.sql");
 
-        List<TrendingModel> trendingGameList = new ArrayList<>();
+        List<TrendingGamesModel> trendingGameList = new ArrayList<>();
 
         try (Connection connection = database.getConnection();
              PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
@@ -50,7 +46,7 @@ public class TrendingRepository {
 
             while (resultSet.next()) {
 
-                TrendingModel game = new TrendingModel(
+                TrendingGamesModel game = new TrendingGamesModel(
                         resultSet.getString("file_uuid"),
                         resultSet.getString("img_uuid"),
                         resultSet.getString("title"),
@@ -73,5 +69,31 @@ public class TrendingRepository {
         } catch (SQLException exception) {
             throw new RuntimeException("Failed to retrieve list of trending games");
         }
+    }
+
+
+    protected HashMap<Integer, String> getGameGenres() {
+
+        String selectSql = loadSQL.loadSQL("/trending/select--get_game_genres.sql");
+
+        HashMap<Integer, String> genres = new HashMap<>(10);
+
+        try (Connection connection = database.getConnection();
+             Statement selectStatement = connection.createStatement();
+                ResultSet resultset = selectStatement.executeQuery(selectSql)) {
+
+                while (resultset.next()) {
+
+                    int id = resultset.getInt("id");
+                    String genre = resultset.getString("genre_type");
+
+                    genres.put(id, genre);
+                }
+        } catch (SQLException exception) {
+
+            throw new RuntimeException("Failed to retrieve a list of genres");
+        }
+
+        return genres;
     }
 }
