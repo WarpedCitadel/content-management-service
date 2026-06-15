@@ -2,11 +2,15 @@ FROM maven:3.9-amazoncorretto-25-alpine AS builder
 
 WORKDIR /app
 
-COPY pom.xml .
+COPY .mvn/ .mvn
+
+COPY mvnw pom.xml .
+
+RUN chmod +x ./mvnw
 
 COPY src/main ./src/main
 
-RUN mvn clean package
+RUN ./mvnw clean package
 
 FROM amazoncorretto:25-alpine AS runner
 
@@ -16,4 +20,4 @@ COPY --from=builder /app/target/content-management-service-0.0.1-SNAPSHOT.jar co
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar", "/app/content-management-service-0.0.1-SNAPSHOT.jar]
+ENTRYPOINT ["java","-jar", "/app/content-management-service-0.0.1-SNAPSHOT.jar"]
