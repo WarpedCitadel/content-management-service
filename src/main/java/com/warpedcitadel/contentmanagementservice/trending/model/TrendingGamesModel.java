@@ -1,5 +1,7 @@
 package com.warpedcitadel.contentmanagementservice.trending.model;
 
+import java.util.List;
+
 public class TrendingGamesModel {
 
     private String gameProfileUUID;
@@ -7,6 +9,7 @@ public class TrendingGamesModel {
     private String title;
     private String shortDesc;
     private String genre;
+    private List<String> platformOS;
     private String createdDtm;
 
 
@@ -15,13 +18,14 @@ public class TrendingGamesModel {
     }
 
     public TrendingGamesModel(String gameProfileUUID, String coverImgUUID, String title,
-                              String shortDesc, String genre, String createdDtm) {
+                              String shortDesc, String genre, List<String> platformOS, String createdDtm) {
 
         this.gameProfileUUID = gameProfileUUID;
         this.coverImgUUID = coverImgUUID;
         this.title = title;
         this.shortDesc = shortDesc;
         this.genre = genre;
+        this.platformOS = platformOS;
         this.createdDtm = createdDtm;
     }
 
@@ -44,6 +48,10 @@ public class TrendingGamesModel {
 
     public String getGenre() {
         return genre;
+    }
+
+    public List<String> getPlatformOS() {
+        return platformOS;
     }
 
     public String getCreatedDtm() {
@@ -69,6 +77,10 @@ public class TrendingGamesModel {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public void setPlatformOS(List<String> platformOS) {
+        this.platformOS = platformOS;
     }
 
     public void setCreatedDtm(String createdDtm) {

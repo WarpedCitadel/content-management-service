@@ -1,9 +1,11 @@
-SELECT
+SELECT DISTINCT
+	gp.id,
 	gp.game_profile_uuid,
 	f.img_uuid,
 	f.title,
 	f.short_desc,
 	g.genre_type,
+	f.platform_os,
 	gp.created_dtm
 FROM wc01.game_profile gp
     JOIN wc01.fnc_search_trending_games_select(     ?,

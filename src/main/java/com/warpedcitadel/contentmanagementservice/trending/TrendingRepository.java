@@ -46,15 +46,26 @@ public class TrendingRepository {
 
             while (resultSet.next()) {
 
-                TrendingGamesModel game = new TrendingGamesModel(
-                        resultSet.getString("game_profile_uuid"),
-                        resultSet.getString("img_uuid"),
-                        resultSet.getString("title"),
-                        resultSet.getString("short_desc"),
-                        resultSet.getString("genre_type"),
-                        resultSet.getString("created_dtm")
-                );
+                TrendingGamesModel game = new TrendingGamesModel();
 
+                game.setGameProfileUUID(resultSet.getString("game_profile_uuid"));
+                game.setCoverImgUUID(resultSet.getString("img_uuid"));
+                game.setTitle(resultSet.getString("title"));
+                game.setShortDesc(resultSet.getString("short_desc"));
+                game.setGenre(resultSet.getString("genre_type"));
+                game.setCreatedDtm(resultSet.getString("created_dtm"));
+
+                List<String> platformOSList = new ArrayList<>();
+                Array osArray = resultSet.getArray("platform_os");
+
+                if (osArray != null) {
+                    String[] osList = (String[]) osArray.getArray();
+
+                    for (String osType : osList) {
+                        platformOSList.add(osType);
+                        game.setPlatformOS(platformOSList);
+                    }
+                }
                 trendingGameList.add(game);
             }
 
@@ -67,8 +78,10 @@ public class TrendingRepository {
             return new SliceImpl<>(trendingGameList, pageable, hasNext);
 
         } catch (SQLException exception) {
-            throw new RuntimeException("Failed to retrieve list of trending games");
+//            throw new RuntimeException("Failed to retrieve list of trending games");
+            exception.printStackTrace();
         }
+        return null;
     }
 
 
