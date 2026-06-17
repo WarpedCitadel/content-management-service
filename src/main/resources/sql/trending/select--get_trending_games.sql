@@ -10,6 +10,7 @@ SELECT DISTINCT
 FROM wc01.game_profile gp
     JOIN wc01.fnc_search_trending_games_select(     ?,
                                           		    ?,
+                                          		    ?,
                                           		    ?
     ) f
     ON gp.id = f.game_profile_id

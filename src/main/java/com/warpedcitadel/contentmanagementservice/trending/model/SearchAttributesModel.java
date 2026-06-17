@@ -5,16 +5,18 @@ public class SearchAttributesModel {
     private String title;
     private int genre;
     private String[] platformOS;
+    private int mostRecent;
 
 
     public SearchAttributesModel() {
 
     }
 
-    public SearchAttributesModel(String title, int genre, String[] platformOS) {
+    public SearchAttributesModel(String title, int genre, String[] platformOS, int mostRecent) {
         this.title = title;
         this.genre = genre;
-         this.platformOS = platformOS;
+        this.platformOS = platformOS;
+        this.mostRecent = mostRecent;
     }
 
 
@@ -30,6 +32,10 @@ public class SearchAttributesModel {
         return platformOS;
     }
 
+    public int getMostRecent() {
+        return mostRecent;
+    }
+
 
     public void setTitle(String title) {
         this.title = title;
@@ -41,5 +47,9 @@ public class SearchAttributesModel {
 
     public void setPlatformOS(String[] platformOS) {
         this.platformOS = platformOS;
+    }
+
+    public void setMostRecent(int mostRecent) {
+        this.mostRecent = mostRecent;
     }
 }

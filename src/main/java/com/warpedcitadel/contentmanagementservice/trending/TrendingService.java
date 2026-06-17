@@ -52,6 +52,9 @@ public class TrendingService {
         attributesModel.setPlatformOS(attributesDto.platformOS());
         attributesList.add(attributesModel.getPlatformOS());
 
+        attributesModel.setMostRecent(attributesDto.mostRecent());
+        attributesList.add(attributesModel.getMostRecent());
+
         attributesList.add(limit + 1);
         attributesList.add(offSet);
 
