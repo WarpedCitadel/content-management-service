@@ -55,6 +55,9 @@ public class TrendingService {
         attributesModel.setMostRecent(attributesDto.mostRecent());
         attributesList.add(attributesModel.getMostRecent());
 
+        attributesModel.setGameType(attributesDto.gameType());
+        attributesList.add(attributesModel.getGameType());
+
         attributesList.add(limit + 1);
         attributesList.add(offSet);
 

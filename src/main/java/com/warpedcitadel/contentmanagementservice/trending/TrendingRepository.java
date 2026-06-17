@@ -35,7 +35,7 @@ public class TrendingRepository {
             int request;
             for (request = 0; attributesList.size() > request; request++) {
 
-                if (attributesList.get(request) != null && !attributesList.isEmpty()) {
+                if (attributesList.get(request) != null && !attributesList.get(request).equals(-1)) {
 
                     if (attributesList.get(request).getClass().equals(String[].class)) {
                         Array osSQLArray = connection.createArrayOf("text", (String[]) attributesList.get(request));
