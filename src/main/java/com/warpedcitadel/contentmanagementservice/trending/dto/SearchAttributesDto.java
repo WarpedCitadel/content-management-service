@@ -2,7 +2,8 @@ package com.warpedcitadel.contentmanagementservice.trending.dto;
 
 public record SearchAttributesDto(
         String title,
-        Integer genre
+        Integer genre,
+        String[] platformOS
 ) {
     public SearchAttributesDto {
         if (genre == null) {

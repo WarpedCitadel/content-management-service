@@ -33,23 +33,24 @@ public class TrendingService {
             throw new IllegalArgumentException("Content requested too large");
         }
 
-        SearchAttributesModel attributesModel =
-                new SearchAttributesModel(
-                        attributesDto.title(),
-                        attributesDto.genre()
-                );
+        SearchAttributesModel attributesModel = new SearchAttributesModel();
 
         List<Object> attributesList = new ArrayList<>();
 
-        if (attributesModel.getTitle() != null &&
-            !attributesModel.getTitle().isEmpty()) {
-            attributesList.add(attributesModel.getTitle().concat("%"));
+        if (attributesDto.title() != null &&
+            !attributesDto.title().isEmpty()) {
+            attributesModel.setTitle(attributesDto.title().concat("%"));
+            attributesList.add(attributesModel.getTitle());
         } else {
             attributesModel.setTitle("%");
             attributesList.add(attributesModel.getTitle());
         }
 
+        attributesModel.setGenre(attributesDto.genre());
         attributesList.add(attributesModel.getGenre());
+
+        attributesModel.setPlatformOS(attributesDto.platformOS());
+        attributesList.add(attributesModel.getPlatformOS());
 
         attributesList.add(limit + 1);
         attributesList.add(offSet);

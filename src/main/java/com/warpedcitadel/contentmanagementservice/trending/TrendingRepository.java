@@ -36,6 +36,12 @@ public class TrendingRepository {
             for (request = 0; attributesList.size() > request; request++) {
 
                 if (attributesList.get(request) != null && !attributesList.isEmpty()) {
+
+                    if (attributesList.get(request).getClass().equals(String[].class)) {
+                        Array osSQLArray = connection.createArrayOf("text", (String[]) attributesList.get(request));
+                        selectStatement.setArray(request + 1, osSQLArray);
+                    }
+
                     selectStatement.setObject(request + 1, attributesList.get(request));
                 } else {
                     selectStatement.setObject(request + 1, null);
@@ -78,10 +84,8 @@ public class TrendingRepository {
             return new SliceImpl<>(trendingGameList, pageable, hasNext);
 
         } catch (SQLException exception) {
-//            throw new RuntimeException("Failed to retrieve list of trending games");
-            exception.printStackTrace();
+            throw new RuntimeException("Failed to retrieve list of trending games");
         }
-        return null;
     }
 
 
