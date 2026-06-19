@@ -4,10 +4,7 @@ import com.warpedcitadel.contentmanagementservice.payload.ApiResponse;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
@@ -28,9 +25,22 @@ public class ProfileController {
     public ResponseEntity<ApiResponse<String>> createGameProfile(@RequestBody GameProfileDto gameProfile, WebRequest request) {
 
         String gameProfileUUID = profileService.createGameProfile(gameProfile);
-        ApiResponse<String> response = new ApiResponse<>("Game profile Created",
+        ApiResponse<String> response = new ApiResponse<>("CREATED",
                 HttpStatus.OK.value(),
                 gameProfileUUID,
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PutMapping("/updateGameProfile")
+    public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody GameProfileDto gameProfile, WebRequest request) {
+
+        profileService.updateGameProfile(gameProfile);
+        ApiResponse<String> response = new ApiResponse<>("UPDATE",
+                HttpStatus.OK.value(),
+                "Game profile updated",
                 request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(response, HttpStatus.OK);

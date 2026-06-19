@@ -19,4 +19,4 @@ LEFT JOIN wc01.game_genre g
     ON g.id = f.game_genre_id
 WHERE 1=1
 ORDER BY f.title ASC
-LIMIT COALESCE( ?, 30) OFFSET COALESCE ( ?, 0);
+LIMIT COALESCE( ?, 30) OFFSET COALESCE( ?, 0);

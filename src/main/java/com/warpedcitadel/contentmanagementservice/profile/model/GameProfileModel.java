@@ -3,6 +3,7 @@ package com.warpedcitadel.contentmanagementservice.profile.model;
 public class GameProfileModel {
 
     private String userUUID;
+    private String gameProfileUUID;
     private String title;
     private String shortDesc;
     private String description;
@@ -15,10 +16,11 @@ public class GameProfileModel {
 
     }
 
-    public GameProfileModel(String userUUID, String title, String shortDesc, String description,
+    public GameProfileModel(String userUUID, String gameProfileUUID, String title, String shortDesc, String description,
                      int gameGenre, int gameType, Integer[] platformOS) {
 
         this.userUUID = userUUID;
+        this.gameProfileUUID = gameProfileUUID;
         this.title = title;
         this.shortDesc = shortDesc;
         this.description = description;
@@ -30,6 +32,10 @@ public class GameProfileModel {
 
     public String getUserUUID() {
         return userUUID;
+    }
+
+    public String getGameProfileUUID() {
+        return gameProfileUUID;
     }
 
     public String getTitle() {
@@ -59,6 +65,10 @@ public class GameProfileModel {
 
     public void setUserUUID(String userUUID) {
         this.userUUID = userUUID;
+    }
+
+    public void setGameProfileUUID(String gameProfileUUID) {
+        this.gameProfileUUID = gameProfileUUID;
     }
 
     public void setTitle(String title) {

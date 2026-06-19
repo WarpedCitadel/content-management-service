@@ -4,6 +4,7 @@ public record GameProfileDto(
 
         // todo: Apply data validation
         String userUUID,
+        String gameProfileUUID,
         String title,
         String shortDesc,
         String description,

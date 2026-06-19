@@ -51,4 +51,31 @@ public class ProfileRepository {
 
         return gameProfileUUID;
     }
+
+
+    protected void updateGameProfile(GameProfileModel gameProfileModel) {
+
+        String updateSql = loadSQL.loadSQL("/profile/update--update_game_profile.sql");
+
+        try (Connection connection = database.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
+
+            Array osArray = connection.createArrayOf("integer", gameProfileModel.getPlatformOS());
+
+            updateStatement.setString(1, gameProfileModel.getUserUUID());
+            updateStatement.setString(2, gameProfileModel.getGameProfileUUID());
+            updateStatement.setString(3, gameProfileModel.getTitle());
+            updateStatement.setString(4, gameProfileModel.getShortDesc());
+            updateStatement.setString(5, gameProfileModel.getDescription());
+            updateStatement.setInt(6, gameProfileModel.getGameGenre());
+            updateStatement.setInt(7, gameProfileModel.getGameType());
+            updateStatement.setArray(8, osArray);
+
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+
+            throw new RuntimeException("Failed to update game profile");
+        }
+    }
 }
