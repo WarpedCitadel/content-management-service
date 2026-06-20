@@ -138,8 +138,7 @@ public class ProfileRepository {
 
         } catch (SQLException exception) {
 
-//            throw new RuntimeException("Failed to retrieve game profile id: " + gameProfileUUID);
-            exception.printStackTrace();
+            throw new RuntimeException("Failed to retrieve game profile id: " + gameProfileUUID);
         }
 
         return null;

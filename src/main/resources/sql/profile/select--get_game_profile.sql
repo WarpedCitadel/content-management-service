@@ -18,7 +18,7 @@ sel_platform_cte AS (
 	ON gp.platform_id = p.id
 	GROUP BY gp.game_profile_id
 )
-SELECT
+SELECT DISTINCT
 	gp.game_profile_uuid,
 	gp.title,
 	gp.description,
@@ -32,6 +32,9 @@ SELECT
 		as display_name,
 	au.user_uuid
 FROM wc01.game_profile gp
+INNER JOIN wc01.game_file gf
+	ON gp.id = gf.game_profile_id
+	AND gf.status_type_id = 4
 INNER JOIN wc01.app_user au
 	ON gp.app_user_id = au.id
 INNER JOIN wc01.game_genre gg
