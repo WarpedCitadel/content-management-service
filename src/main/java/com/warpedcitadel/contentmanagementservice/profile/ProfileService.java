@@ -1,6 +1,8 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDto;
+import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +55,32 @@ public class ProfileService {
 
         profileRepository.updateGameProfile(gameProfileModel);
 
+    }
+
+
+    protected GameProfileDetailsDto getGameProfile(String gameProfileUUID) {
+
+        GameProfileDetailsModel gameProfileModel = profileRepository.getGameProfile(gameProfileUUID);
+
+        if (gameProfileModel == null) {
+            throw new RuntimeException("Failed to retrieve game profile id: " + gameProfileUUID);
+        }
+
+        GameProfileDetailsDto gameProfile =
+                new GameProfileDetailsDto(
+                        gameProfileModel.getGameProfileUUID(),
+                        gameProfileModel.getTitle(),
+                        gameProfileModel.getDescription(),
+                        gameProfileModel.getGenreType(),
+                        gameProfileModel.getGameType(),
+                        gameProfileModel.getPlatformOS(),
+                        gameProfileModel.getCreatedDtm(),
+                        gameProfileModel.getCoverImg(),
+                        gameProfileModel.getGameImg(),
+                        gameProfileModel.getDisplayName(),
+                        gameProfileModel.getUserUUID()
+                );
+
+        return gameProfile;
     }
 }

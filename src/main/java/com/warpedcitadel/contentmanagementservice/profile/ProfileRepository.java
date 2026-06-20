@@ -1,11 +1,14 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel;
 import com.warpedcitadel.contentmanagementservice.util.SQLFileReader;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ProfileRepository {
@@ -75,7 +78,70 @@ public class ProfileRepository {
 
         } catch (SQLException exception) {
 
-            throw new RuntimeException("Failed to update game profile");
+            throw new RuntimeException("Failed to update game profile for profile id: "
+                    + gameProfileModel.getGameProfileUUID());
         }
+    }
+
+
+    protected GameProfileDetailsModel getGameProfile(String gameProfileUUID) {
+
+        String selectSql = loadSQL.loadSQL("/profile/select--get_game_profile.sql");
+
+        try (Connection connection = database.getConnection();
+        PreparedStatement selectStatement = connection.prepareStatement(selectSql)) {
+
+            selectStatement.setString(1, gameProfileUUID);
+
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                GameProfileDetailsModel gameProfile = new GameProfileDetailsModel();
+
+                gameProfile.setGameProfileUUID(resultSet.getString("game_profile_uuid"));
+                gameProfile.setTitle(resultSet.getString("title"));
+                gameProfile.setDescription(resultSet.getString("description"));
+                gameProfile.setGenreType(resultSet.getString("genre_type"));
+                gameProfile.setGameType(resultSet.getString("game_type_name"));
+                gameProfile.setCreatedDtm(resultSet.getString("created_dtm"));
+                gameProfile.setCoverImg(resultSet.getString("cover_img_uuid"));
+                gameProfile.setDisplayName(resultSet.getString("display_name"));
+                gameProfile.setUserUUID(resultSet.getString("user_uuid"));
+
+                List<String> platformOSList = new ArrayList<>(4);
+                Array osArray = resultSet.getArray("platform_os");
+
+                if (osArray != null) {
+                    String[] osList = (String[]) osArray.getArray();
+
+                    for (String osType : osList) {
+                        platformOSList.add(osType);
+                    }
+                    gameProfile.setPlatformOS(platformOSList);
+                }
+
+                List<String> gameImgList = new ArrayList<>(5);
+                Array imgUUIDArray = resultSet.getArray("game_img_uuid");
+
+                if (imgUUIDArray != null) {
+                    Object[] imgList = (Object[]) imgUUIDArray.getArray();
+
+                    for (Object imgUUID : imgList) {
+                        gameImgList.add(imgUUID.toString());
+                    }
+                    gameProfile.setGameImg(gameImgList);
+                }
+
+                return gameProfile;
+            }
+
+        } catch (SQLException exception) {
+
+//            throw new RuntimeException("Failed to retrieve game profile id: " + gameProfileUUID);
+            exception.printStackTrace();
+        }
+
+        return null;
     }
 }
