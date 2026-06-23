@@ -1,5 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.profile.dto.DeleteGameProfileDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDto;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
@@ -82,5 +83,17 @@ public class ProfileService {
                 );
 
         return gameProfile;
+    }
+
+
+    protected void deleteGameProfile(DeleteGameProfileDto gameProfileDto) {
+
+        GameProfileModel gameProfileModel = new GameProfileModel();
+
+        // Todo: validate the data before it is inserted into the database
+        gameProfileModel.setUserUUID(gameProfileDto.userUUID());
+        gameProfileModel.setGameProfileUUID(gameProfileDto.gameProfileUUID());
+
+        profileRepository.deleteGameProfile(gameProfileModel);
     }
 }

@@ -1,6 +1,7 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
 import com.warpedcitadel.contentmanagementservice.payload.ApiResponse;
+import com.warpedcitadel.contentmanagementservice.profile.dto.DeleteGameProfileDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDto;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,19 @@ public class ProfileController {
 
         GameProfileDetailsDto gameProfile = profileService.getGameProfile(uuid);
         ApiResponse<GameProfileDetailsDto> response = new ApiResponse<>("Game profile details",
+                HttpStatus.OK.value(),
+                gameProfile,
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/deleteGameProfile")
+    public ResponseEntity<ApiResponse<DeleteGameProfileDto>> deleteGameProfile(@RequestBody DeleteGameProfileDto gameProfile, WebRequest request) {
+
+        profileService.deleteGameProfile(gameProfile);
+        ApiResponse<DeleteGameProfileDto> response = new ApiResponse<>("Game profile deleted",
                 HttpStatus.OK.value(),
                 gameProfile,
                 request.getDescription(false).replace("uri=", ""),

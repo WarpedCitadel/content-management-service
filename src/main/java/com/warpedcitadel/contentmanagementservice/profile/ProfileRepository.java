@@ -143,4 +143,26 @@ public class ProfileRepository {
 
         return null;
     }
+
+
+    protected void deleteGameProfile(GameProfileModel gameProfileModel) {
+
+        String deleteSql = loadSQL.loadSQL("/profile/delete--delete_game_profile.sql");
+
+        try (Connection connection = database.getConnection();
+        PreparedStatement deleteStatement = connection.prepareStatement(deleteSql)) {
+
+            deleteStatement.setString(1, gameProfileModel.getUserUUID());
+            deleteStatement.setString(2, gameProfileModel.getGameProfileUUID());
+
+            int rowsAffected = deleteStatement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new RuntimeException("Failed to delete game profile with uuid: " + gameProfileModel.getGameProfileUUID());
+            }
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to perform profile deletion");
+        }
+    }
 }
