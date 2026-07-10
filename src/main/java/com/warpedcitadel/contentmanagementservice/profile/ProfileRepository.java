@@ -1,6 +1,8 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.profile.model.GameFileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
+import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileImagesModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel;
 import com.warpedcitadel.contentmanagementservice.util.SQLFileReader;
 import org.springframework.stereotype.Repository;
@@ -98,6 +100,8 @@ public class ProfileRepository {
             while (resultSet.next()) {
 
                 GameProfileDetailsModel gameProfile = new GameProfileDetailsModel();
+                GameProfileImagesModel gameImages = new GameProfileImagesModel();
+                GameFileDetailsModel gameFiles = new GameFileDetailsModel();
 
                 gameProfile.setGameProfileUUID(resultSet.getString("game_profile_uuid"));
                 gameProfile.setTitle(resultSet.getString("title"));
@@ -105,9 +109,37 @@ public class ProfileRepository {
                 gameProfile.setGenreType(resultSet.getString("genre_type"));
                 gameProfile.setGameType(resultSet.getString("game_type_name"));
                 gameProfile.setCreatedDtm(resultSet.getString("created_dtm"));
-                gameProfile.setCoverImg(resultSet.getString("cover_img_uuid"));
+                gameFiles.setBrowserGameUUID(resultSet.getString("browser_game"));
+                gameImages.setCoverImg(resultSet.getString("cover_img_uuid"));
                 gameProfile.setDisplayName(resultSet.getString("display_name"));
                 gameProfile.setUserUUID(resultSet.getString("user_uuid"));
+
+
+                List<String> fileNameList = new ArrayList<>();
+                Array fileNameArray = resultSet.getArray("file_name");
+
+                if (fileNameArray != null) {
+                    String[] fileNames = (String[]) fileNameArray.getArray();
+
+                    for (String fileName : fileNames) {
+
+                        fileNameList.add(fileName);
+                    }
+                    gameFiles.setFileName(fileNameList);
+                }
+
+                List<String> fileUUIDList = new ArrayList<>();
+                Array fileUUIDArray = resultSet.getArray("file_uuid");
+
+                if (fileUUIDArray != null) {
+                    Object[] fileUUIDs = (Object[]) fileNameArray.getArray();
+
+                    for (Object fileUUID : fileUUIDs) {
+
+                        fileUUIDList.add(fileUUID.toString());
+                    }
+                    gameFiles.setFileUUID(fileUUIDList);
+                }
 
                 List<String> platformOSList = new ArrayList<>(4);
                 Array osArray = resultSet.getArray("platform_os");
@@ -130,8 +162,11 @@ public class ProfileRepository {
                     for (Object imgUUID : imgList) {
                         gameImgList.add(imgUUID.toString());
                     }
-                    gameProfile.setGameImg(gameImgList);
+                    gameImages.setGameImg(gameImgList);
                 }
+
+                gameProfile.setGameFileDetailsModel(gameFiles);
+                gameProfile.setGameProfileImagesModel(gameImages);
 
                 return gameProfile;
             }

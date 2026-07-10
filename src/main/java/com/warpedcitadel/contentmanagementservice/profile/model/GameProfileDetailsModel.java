@@ -11,10 +11,10 @@ public class GameProfileDetailsModel {
     private String gameType;
     private List<String> platformOS;
     private String createdDtm;
-    private String coverImg;
-    private List<String> gameImg;
     private String displayName;
     private String userUUID;
+    private GameProfileImagesModel gameProfileImagesModel;
+    private GameFileDetailsModel gameFileDetailsModel;
 
 
     public GameProfileDetailsModel() {
@@ -23,8 +23,8 @@ public class GameProfileDetailsModel {
 
     public GameProfileDetailsModel(String gameProfileUUID, String title, String description,
                                    String genreType, String gameType, List<String> platformOS,
-                                   String createdDtm, String coverImg, List<String> gameImg,
-                                   String displayName, String userUUID) {
+                                   String createdDtm, String displayName, String userUUID,
+                                   GameProfileImagesModel gameProfileImagesModel, GameFileDetailsModel gameFileDetailsModel) {
 
         this.gameProfileUUID = gameProfileUUID;
         this.title = title;
@@ -33,10 +33,10 @@ public class GameProfileDetailsModel {
         this.gameType = gameType;
         this.platformOS = platformOS;
         this.createdDtm = createdDtm;
-        this.coverImg = coverImg;
-        this.gameImg = gameImg;
         this.displayName = displayName;
         this.userUUID = userUUID;
+        this.gameProfileImagesModel = gameProfileImagesModel;
+        this.gameFileDetailsModel = gameFileDetailsModel;
     }
 
     public String getGameProfileUUID() {
@@ -67,20 +67,20 @@ public class GameProfileDetailsModel {
         return createdDtm;
     }
 
-    public String getCoverImg() {
-        return coverImg;
-    }
-
-    public List<String> getGameImg() {
-        return gameImg;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public String getUserUUID() {
         return userUUID;
+    }
+
+    public GameProfileImagesModel getGameProfileImagesModel() {
+        return gameProfileImagesModel;
+    }
+
+    public GameFileDetailsModel getGameFileDetailsModel() {
+        return gameFileDetailsModel;
     }
 
 
@@ -112,19 +112,19 @@ public class GameProfileDetailsModel {
         this.createdDtm = createdDtm;
     }
 
-    public void setCoverImg(String coverImg) {
-        this.coverImg = coverImg;
-    }
-
-    public void setGameImg(List<String> gameImg) {
-        this.gameImg = gameImg;
-    }
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     public void setUserUUID(String userUUID) {
         this.userUUID = userUUID;
+    }
+
+    public void setGameProfileImagesModel(GameProfileImagesModel gameProfileImagesModel) {
+        this.gameProfileImagesModel = gameProfileImagesModel;
+    }
+
+    public void setGameFileDetailsModel(GameFileDetailsModel gameFileDetailsModel) {
+        this.gameFileDetailsModel = gameFileDetailsModel;
     }
 }

@@ -10,8 +10,8 @@ public record GameProfileDetailsDto(
         String gameType,
         List<String> platformOS,
         String createdDtm,
-        String coverImg,
-        List<String> gameImg,
+        GameProfileImageDto gameImages,
+        GameFileDetailsDto gameFiles,
         String displayName,
         String userUUID
 ) {}
