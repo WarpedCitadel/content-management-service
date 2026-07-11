@@ -85,7 +85,7 @@ public class ProfileService {
         GameProfileDetailsModel gameProfileModel = profileRepository.getGameProfile(gameProfileUUID);
 
         if (gameProfileModel == null) {
-            throw new RuntimeException("Failed to retrieve game profile id: " + gameProfileUUID);
+            throw new RuntimeException("Request game profile does not exist!: " + gameProfileUUID);
         }
 
         GameFileDetailsDto gameFiles = new GameFileDetailsDto(
@@ -159,10 +159,16 @@ public class ProfileService {
 
         try {
 
-            String result = findFilesByExtension(gameProfileDetailsModel);
-            String gameUrl = "https://www.warpedcitadel.com/" + result;
+            if (gameProfileDetailsModel.getGameFileDetailsModel().getBrowserGameUUID() != null) {
 
-            return gameUrl;
+
+                String result = findFilesByExtension(gameProfileDetailsModel);
+                String gameUrl = "https://www.warpedcitadel.com/" + result;
+
+                return gameUrl;
+            }
+
+            return null;
         } catch (Exception exception) {
 
             throw new RuntimeException("Failed to generate html url for game: " + gameProfileDetailsModel.getTitle());
