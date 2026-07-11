@@ -97,7 +97,7 @@ public class ProfileRepository {
 
             ResultSet resultSet = selectStatement.executeQuery();
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
 
                 GameProfileDetailsModel gameProfile = new GameProfileDetailsModel();
                 GameProfileImagesModel gameImages = new GameProfileImagesModel();

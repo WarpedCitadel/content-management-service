@@ -129,7 +129,6 @@ public class ProfileService {
     }
 
     // ## HELPER FUNCTION ##
-
     public HashMap<String, String> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
 
         HashMap<String, String> gameFiles = new HashMap<>();
@@ -220,8 +219,6 @@ public class ProfileService {
 
             String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                     "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
-
-            System.out.println(imageUrl);
 
             gameImageUrls.add(cloudFrontCookieMaker.generateSignedUrl(imageUrl));
         }
