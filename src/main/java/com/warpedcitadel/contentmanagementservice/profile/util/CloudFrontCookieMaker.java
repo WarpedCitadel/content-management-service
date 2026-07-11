@@ -1,12 +1,16 @@
 package com.warpedcitadel.contentmanagementservice.profile.util;
 
 import com.warpedcitadel.contentmanagementservice.profile.dto.CloudFrontCookie;
+import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.cloudfront.CloudFrontUtilities;
+import software.amazon.awssdk.services.cloudfront.model.CannedSignerRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -24,7 +28,9 @@ public class CloudFrontCookieMaker {
     @Value("${cloud.aws.keypair}")
     private String keyPair;
 
-    public CloudFrontCookie generateSignedCookie() {
+    private String cloudFrontDomain = "https://www.warpedcitadel.com/";
+
+    public CloudFrontCookie generateSignedCookie(GameProfileDetailsDto gameProfileDetailsDto) {
 
         try {
 
@@ -32,7 +38,9 @@ public class CloudFrontCookieMaker {
                     Instant.now().plus(Duration.ofHours(2));
 
             String resource =
-                    "Https://www.warpedcitadel.com";
+                    cloudFrontDomain +
+                            "games/" +
+                            gameProfileDetailsDto.gameProfileUUID() + "/files/*"; // needs to be narrowed down
 
             String policy =
                     createPolicy(resource, expiration);
@@ -50,6 +58,33 @@ public class CloudFrontCookieMaker {
 
             throw new RuntimeException("Failed generating CloudFront cookie", exception);
         }
+    }
+
+
+    public String generateSignedUrl(String objectKey) {
+
+        try {
+
+            Path privateKeyPath = privateKeyResource.getFile().toPath();
+
+            CannedSignerRequest request =
+                    CannedSignerRequest.builder()
+                            .resourceUrl(objectKey)
+                            .privateKey(privateKeyPath)
+                            .keyPairId(keyPair)
+                            .expirationDate(
+                                    Instant.now().plus(Duration.ofHours(2)))
+                            .build();
+
+            return CloudFrontUtilities.create()
+                    .getSignedUrlWithCannedPolicy(request)
+                    .url();
+        } catch (Exception exception) {
+
+            System.out.println("Failed to generate Presigned URL");
+        }
+
+        return null;
     }
 
 

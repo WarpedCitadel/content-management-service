@@ -1,9 +1,9 @@
 WITH sel_img_uuid_cte AS (
 	SELECT
 		game_profile_id,
-		array_agg(gi.img_uuid)
+		array_agg(gi.file_name)
 			filter (WHERE gi.iscover = FALSE)
-				AS game_img_uuid
+				AS game_img
 	FROM wc01.game_image gi
 	GROUP BY
 		game_profile_id
@@ -19,9 +19,8 @@ sel_game_file_cte AS (
 			AS file_uuid,
 		array_agg(gf.status_type_id)
 		filter (WHERE gf.isbrowser = FALSE)
-			AS file_status
 	FROM wc01.game_file gf
-	WHERE gf.status_type_id = 4
+	where gf.status_type_id = 4
 	GROUP BY gf.game_profile_id
 ),
 sel_platform_cte AS (
@@ -44,11 +43,10 @@ SELECT DISTINCT
 	gp.created_dtm,
 	gf.file_uuid as browser_game,
 	sg.file_name,
-	sg.file_uuid,
-	gi.img_uuid AS cover_img_uuid,
-	si.game_img_uuid,
+	gi.file_name AS cover_img,
+	si.game_img,
 	COALESCE(aup.display_name, au.username)
-		AS display_name,
+		as display_name,
 	au.user_uuid
 FROM wc01.game_profile gp
 INNER JOIN sel_game_file_cte sg

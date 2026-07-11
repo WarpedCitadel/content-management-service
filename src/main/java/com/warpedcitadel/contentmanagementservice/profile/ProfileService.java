@@ -3,6 +3,7 @@ package com.warpedcitadel.contentmanagementservice.profile;
 import com.warpedcitadel.contentmanagementservice.profile.dto.*;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel;
+import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -27,12 +28,13 @@ public class ProfileService {
 
 
     private final ProfileRepository profileRepository;
-
     private final S3Client s3Client;
+    private final CloudFrontCookieMaker cloudFrontCookieMaker;
 
-    public ProfileService(ProfileRepository profileRepository, S3Client s3Client) {
+    public ProfileService(ProfileRepository profileRepository, S3Client s3Client, CloudFrontCookieMaker cloudFrontCookieMaker) {
         this.profileRepository = profileRepository;
         this.s3Client = s3Client;
+        this.cloudFrontCookieMaker = cloudFrontCookieMaker;
     }
 
 
@@ -132,23 +134,17 @@ public class ProfileService {
 
         HashMap<String, String> gameFiles = new HashMap<>();
 
-        if (gameProfileDetailsModel.getGameFileDetailsModel().getFileUUID() != null || gameProfileDetailsModel.getGameFileDetailsModel().getFileName() != null) {
+        if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName() != null) {
 
             try {
-                if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size() != gameProfileDetailsModel.getGameFileDetailsModel().getFileUUID().size()) {
 
-                    throw new RuntimeException("Corresponding file name must have a associated UUID");
-                }
-
-
-
-                for (int i = 0; gameProfileDetailsModel.getGameFileDetailsModel().getFileUUID().size() > i; i++) {
+                for (int i = 0; gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size() > i; i++) {
 
                     String gameUrl = "https://www.warpedcitadel.com/games/" + gameProfileDetailsModel.getGameProfileUUID() +
-                            "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileUUID().get(i);
+                            "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
                     String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
 
-                    gameFiles.put(gameFileName, gameUrl);
+                    gameFiles.put(gameFileName, cloudFrontCookieMaker.generateSignedUrl(gameUrl));
                 }
             } catch (Exception exception) {
 
@@ -213,7 +209,7 @@ public class ProfileService {
         String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                 "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getCoverImg();
 
-        return imageUrl;
+        return cloudFrontCookieMaker.generateSignedUrl(imageUrl);
     }
 
     private List<String> generateGameImageUrl(GameProfileDetailsModel gameProfileDetailsModel) {
@@ -225,7 +221,9 @@ public class ProfileService {
             String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                     "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
 
-            gameImageUrls.add(imageUrl);
+            System.out.println(imageUrl);
+
+            gameImageUrls.add(cloudFrontCookieMaker.generateSignedUrl(imageUrl));
         }
 
         return gameImageUrls;

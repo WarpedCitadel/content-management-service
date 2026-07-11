@@ -110,7 +110,7 @@ public class ProfileRepository {
                 gameProfile.setGameType(resultSet.getString("game_type_name"));
                 gameProfile.setCreatedDtm(resultSet.getString("created_dtm"));
                 gameFiles.setBrowserGameUUID(resultSet.getString("browser_game"));
-                gameImages.setCoverImg(resultSet.getString("cover_img_uuid"));
+                gameImages.setCoverImg(resultSet.getString("cover_img"));
                 gameProfile.setDisplayName(resultSet.getString("display_name"));
                 gameProfile.setUserUUID(resultSet.getString("user_uuid"));
 
@@ -128,19 +128,6 @@ public class ProfileRepository {
                     gameFiles.setFileName(fileNameList);
                 }
 
-                List<String> fileUUIDList = new ArrayList<>();
-                Array fileUUIDArray = resultSet.getArray("file_uuid");
-
-                if (fileUUIDArray != null) {
-                    Object[] fileUUIDs = (Object[]) fileNameArray.getArray();
-
-                    for (Object fileUUID : fileUUIDs) {
-
-                        fileUUIDList.add(fileUUID.toString());
-                    }
-                    gameFiles.setFileUUID(fileUUIDList);
-                }
-
                 List<String> platformOSList = new ArrayList<>(4);
                 Array osArray = resultSet.getArray("platform_os");
 
@@ -154,13 +141,13 @@ public class ProfileRepository {
                 }
 
                 List<String> gameImgList = new ArrayList<>(5);
-                Array imgUUIDArray = resultSet.getArray("game_img_uuid");
+                Array imgUUIDArray = resultSet.getArray("game_img");
 
                 if (imgUUIDArray != null) {
-                    Object[] imgList = (Object[]) imgUUIDArray.getArray();
+                    String[] imgList = (String[]) imgUUIDArray.getArray();
 
-                    for (Object imgUUID : imgList) {
-                        gameImgList.add(imgUUID.toString());
+                    for (String imgUUID : imgList) {
+                        gameImgList.add(imgUUID);
                     }
                     gameImages.setGameImg(gameImgList);
                 }

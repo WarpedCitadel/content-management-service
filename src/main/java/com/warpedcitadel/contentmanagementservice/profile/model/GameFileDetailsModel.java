@@ -6,17 +6,15 @@ public class GameFileDetailsModel {
 
     String browserGameUUID;
     List<String> fileName;
-    List<String> fileUUID;
 
 
     public GameFileDetailsModel() {
 
     }
 
-    public GameFileDetailsModel(String browserGameUUID, List<String> fileName, List<String> fileUUID) {
+    public GameFileDetailsModel(String browserGameUUID, List<String> fileName) {
         this.browserGameUUID = browserGameUUID;
         this.fileName = fileName;
-        this.fileUUID = fileUUID;
     }
 
 
@@ -28,20 +26,11 @@ public class GameFileDetailsModel {
         return fileName;
     }
 
-    public List<String> getFileUUID() {
-        return fileUUID;
-    }
-
-
     public void setBrowserGameUUID(String browserGameUUID) {
         this.browserGameUUID = browserGameUUID;
     }
 
     public void setFileName(List<String> fileName) {
         this.fileName = fileName;
-    }
-
-    public void setFileUUID(List<String> fileUUID) {
-        this.fileUUID = fileUUID;
     }
 }

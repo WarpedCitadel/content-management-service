@@ -17,7 +17,7 @@ import java.time.Clock;
 import java.time.Instant;
 
 @RestController
-@RequestMapping(path = "/main", version="1.0")
+@RequestMapping(path = "/api/main", version="1.0")
 public class TrendingController {
 
     private final TrendingService trendingService;
