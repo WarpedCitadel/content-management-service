@@ -1,5 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.trending;
 
+import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
 import com.warpedcitadel.contentmanagementservice.trending.dto.GameGenresDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SearchAttributesDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SlicedResponse;
@@ -7,7 +8,7 @@ import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingGamesDto;
 import com.warpedcitadel.contentmanagementservice.trending.model.SearchAttributesModel;
 import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,9 +19,11 @@ import java.util.List;
 public class TrendingService {
 
     private final TrendingRepository trendingRepository;
+    private final CloudFrontCookieMaker cloudFrontCookieMaker; // Make this class universal
 
-    public TrendingService(TrendingRepository trendingRepository) {
+    public TrendingService(TrendingRepository trendingRepository, CloudFrontCookieMaker cloudFrontCookieMaker) {
         this.trendingRepository = trendingRepository;
+        this.cloudFrontCookieMaker = cloudFrontCookieMaker;
     }
 
 
@@ -61,8 +64,28 @@ public class TrendingService {
         attributesList.add(limit + 1);
         attributesList.add(offSet);
 
-        Slice<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(pageable, attributesList);
-        SlicedResponse<TrendingGamesModel> filterData = new SlicedResponse<>(trendingGameList);
+        List<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(pageable, attributesList);
+
+
+        for (int i = 0; trendingGameList.size() > i; i++) {
+
+            String gameProfileUUID = trendingGameList.getFirst().getGameProfileUUID();
+            String coverImg = trendingGameList.get(i).getCoverImg();
+
+            String result = generateGameImageUrl(gameProfileUUID, coverImg);
+
+            trendingGameList.get(i).setCoverImgUUID(result);
+        }
+
+        boolean hasNext = trendingGameList.size() > pageable.getPageSize();
+
+        if (hasNext) {
+            trendingGameList.remove(trendingGameList.size() - 1);
+        }
+
+        SliceImpl paginatedList = new SliceImpl<>(trendingGameList, pageable, hasNext);
+
+        SlicedResponse<TrendingGamesModel> filterData = new SlicedResponse<>(paginatedList);
         return new TrendingGamesDto(filterData);
     }
 
@@ -74,5 +97,16 @@ public class TrendingService {
         return new GameGenresDto(
                 genres
         );
+    }
+
+
+    private String generateGameImageUrl(String gameProfileUUID, String coverImg) {
+
+        String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileUUID +
+                    "/gameImages/" + coverImg;
+
+        String coverImgURl = cloudFrontCookieMaker.generateSignedUrl(imageUrl);
+
+        return coverImgURl;
     }
 }

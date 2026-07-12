@@ -3,13 +3,13 @@ package com.warpedcitadel.contentmanagementservice.trending;
 import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
 import com.warpedcitadel.contentmanagementservice.util.SQLFileReader;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Repository
 public class TrendingRepository {
@@ -23,7 +23,7 @@ public class TrendingRepository {
     }
 
 
-    protected Slice<TrendingGamesModel> getTrendingGames(Pageable pageable, List<Object> attributesList) {
+    protected List<TrendingGamesModel> getTrendingGames(Pageable pageable, List<Object> attributesList) {
 
         String selectSQL = loadSQL.loadSQL("/trending/select--get_trending_games.sql");
 
@@ -55,7 +55,7 @@ public class TrendingRepository {
                 TrendingGamesModel game = new TrendingGamesModel();
 
                 game.setGameProfileUUID(resultSet.getString("game_profile_uuid"));
-                game.setCoverImgUUID(resultSet.getString("img_uuid"));
+                game.setCoverImgUUID(resultSet.getString("file_name"));
                 game.setTitle(resultSet.getString("title"));
                 game.setShortDesc(resultSet.getString("short_desc"));
                 game.setGenre(resultSet.getString("genre_type"));
@@ -75,17 +75,11 @@ public class TrendingRepository {
                 trendingGameList.add(game);
             }
 
-            boolean hasNext = trendingGameList.size() > pageable.getPageSize();
-
-            if (hasNext) {
-                trendingGameList.remove(trendingGameList.size() - 1);
-            }
-
-            return new SliceImpl<>(trendingGameList, pageable, hasNext);
-
         } catch (SQLException exception) {
             throw new RuntimeException("Failed to retrieve list of trending games");
         }
+
+        return trendingGameList;
     }
 
 

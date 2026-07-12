@@ -5,7 +5,7 @@ import java.util.List;
 public class TrendingGamesModel {
 
     private String gameProfileUUID;
-    private String coverImgUUID;
+    private String coverImg;
     private String title;
     private String shortDesc;
     private String genre;
@@ -17,11 +17,11 @@ public class TrendingGamesModel {
 
     }
 
-    public TrendingGamesModel(String gameProfileUUID, String coverImgUUID, String title,
+    public TrendingGamesModel(String gameProfileUUID, String coverImg, String title,
                               String shortDesc, String genre, List<String> platformOS, String createdDtm) {
 
         this.gameProfileUUID = gameProfileUUID;
-        this.coverImgUUID = coverImgUUID;
+        this.coverImg = coverImg;
         this.title = title;
         this.shortDesc = shortDesc;
         this.genre = genre;
@@ -34,8 +34,8 @@ public class TrendingGamesModel {
         return gameProfileUUID;
     }
 
-    public String getCoverImgUUID() {
-        return coverImgUUID;
+    public String getCoverImg() {
+        return coverImg;
     }
 
     public String getTitle() {
@@ -63,8 +63,8 @@ public class TrendingGamesModel {
         this.gameProfileUUID = gameProfileUUID;
     }
 
-    public void setCoverImgUUID(String coverImgUUID) {
-        this.coverImgUUID = coverImgUUID;
+    public void setCoverImgUUID(String coverImg) {
+        this.coverImg= coverImg;
     }
 
     public void setTitle(String title) {

@@ -1,7 +1,7 @@
 SELECT DISTINCT
 	gp.id,
 	gp.game_profile_uuid,
-	f.img_uuid,
+	f.file_name,
 	f.title,
 	f.short_desc,
 	g.genre_type,
