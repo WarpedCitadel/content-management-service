@@ -32,7 +32,8 @@ public class ProfileController {
 
 
     @PostMapping("/createGameProfile")
-    public ResponseEntity<ApiResponse<String>> createGameProfile(@RequestBody GameProfileDto gameProfile, WebRequest request) {
+    public ResponseEntity<ApiResponse<String>> createGameProfile(@RequestBody GameProfileDto gameProfile,
+                                                                                WebRequest request) {
 
         String gameProfileUUID = profileService.createGameProfile(gameProfile);
         ApiResponse<String> response = new ApiResponse<>("CREATED",
@@ -45,7 +46,8 @@ public class ProfileController {
 
 
     @PutMapping("/updateGameProfile")
-    public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody GameProfileDto gameProfile, WebRequest request) {
+    public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody  GameProfileDto gameProfile,
+                                                                                WebRequest request) {
 
         profileService.updateGameProfile(gameProfile);
         ApiResponse<String> response = new ApiResponse<>("UPDATE",
@@ -58,8 +60,9 @@ public class ProfileController {
 
 
     @GetMapping("/getGameProfile/{uuid}")
-    public ResponseEntity<ApiResponse<GameProfileDetailsDto>> getGameProfile(@PathVariable String uuid, WebRequest request,
-                                                                             HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<GameProfileDetailsDto>> getGameProfile(@PathVariable String uuid,
+                                                                                            WebRequest request,
+                                                                                            HttpServletResponse response) {
 
         GameProfileDetailsDto gameProfile = profileService.getGameProfile(uuid);
         CloudFrontCookie cookie = cloudFrontCookieMaker.generateSignedCookie(gameProfile);
@@ -86,7 +89,8 @@ public class ProfileController {
 
 
     @DeleteMapping("/deleteGameProfile")
-    public ResponseEntity<ApiResponse<DeleteGameProfileDto>> deleteGameProfile(@RequestBody DeleteGameProfileDto gameProfile, WebRequest request) {
+    public ResponseEntity<ApiResponse<DeleteGameProfileDto>> deleteGameProfile(@RequestBody DeleteGameProfileDto gameProfile,
+                                                                                            WebRequest request) {
 
         profileService.deleteGameProfile(gameProfile);
         ApiResponse<DeleteGameProfileDto> response = new ApiResponse<>("Game profile deleted",
@@ -99,8 +103,6 @@ public class ProfileController {
 
 
     // ### HELPER Function ###
-
-    // TODO: Move to content-management-service
     private void addCookie(
             HttpServletResponse response,
             String name,

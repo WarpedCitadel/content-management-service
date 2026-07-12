@@ -41,7 +41,7 @@ SELECT DISTINCT
 	gt.game_type_name,
 	sp.platform_os,
 	gp.created_dtm,
-	gf.file_uuid AS browser_game,
+	gf.file_name AS browser_game,
 	sg.file_name,
 	gi.file_name AS cover_img,
 	si.game_img,

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class GameFileDetailsModel {
 
-    String browserGameUUID;
+    String browserFileName;
     List<String> fileName;
 
 
@@ -12,22 +12,22 @@ public class GameFileDetailsModel {
 
     }
 
-    public GameFileDetailsModel(String browserGameUUID, List<String> fileName) {
-        this.browserGameUUID = browserGameUUID;
+    public GameFileDetailsModel(String browserFileName, List<String> fileName) {
+        this.browserFileName = browserFileName;
         this.fileName = fileName;
     }
 
 
-    public String getBrowserGameUUID() {
-        return browserGameUUID;
+    public String getBrowserFileName() {
+        return browserFileName;
     }
 
     public List<String> getFileName() {
         return fileName;
     }
 
-    public void setBrowserGameUUID(String browserGameUUID) {
-        this.browserGameUUID = browserGameUUID;
+    public void setBrowserFileName(String browserFileName) {
+        this.browserFileName = browserFileName;
     }
 
     public void setFileName(List<String> fileName) {

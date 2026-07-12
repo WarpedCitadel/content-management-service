@@ -7,7 +7,7 @@ import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieM
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.util.ArrayList;
@@ -125,11 +125,49 @@ public class ProfileService {
         gameProfileModel.setUserUUID(gameProfileDto.userUUID());
         gameProfileModel.setGameProfileUUID(gameProfileDto.gameProfileUUID());
 
+        String imagePrefix = "images/games/" + gameProfileModel.getGameProfileUUID() + "/";
+        String gamePrefix = "games/" + gameProfileModel.getGameProfileUUID() + "/";
+
+        deleteS3Objects(imageBucketName, imagePrefix);
+        deleteS3Objects(gameBucketName, gamePrefix);
+
         profileRepository.deleteGameProfile(gameProfileModel);
     }
 
-    // ## HELPER FUNCTION ##
-    public HashMap<String, String> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
+    private void deleteS3Objects(String bucketName, String prefix) {
+
+        String continuationToken = null;
+
+        do {
+
+            ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
+                    .bucket(bucketName)
+                    .prefix(prefix)
+                    .continuationToken(continuationToken)
+                    .build();
+
+            ListObjectsV2Response objectList = s3Client.listObjectsV2(listRequest);
+            List<ObjectIdentifier> deletionList = new ArrayList<>();
+
+            for (S3Object s3Object : objectList.contents()) {
+                deletionList.add(ObjectIdentifier.builder().key(s3Object.key()).build());
+            }
+
+            if (!deletionList.isEmpty()) {
+                DeleteObjectsRequest deleteS3Objects = DeleteObjectsRequest.builder()
+                        .bucket(bucketName)
+                        .delete(builder -> builder.objects(deletionList))
+                        .build();
+
+                s3Client.deleteObjects(deleteS3Objects);
+            }
+
+            continuationToken = objectList.nextContinuationToken();
+        } while (continuationToken != null);
+    }
+
+    // ## HELPER FUNCTIONS ##
+    private HashMap<String, String> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
 
         HashMap<String, String> gameFiles = new HashMap<>();
 
@@ -155,12 +193,11 @@ public class ProfileService {
     }
 
 
-    public String generateHtmlGameUrl(GameProfileDetailsModel gameProfileDetailsModel) {
+    private String generateHtmlGameUrl(GameProfileDetailsModel gameProfileDetailsModel) {
 
         try {
 
-            if (gameProfileDetailsModel.getGameFileDetailsModel().getBrowserGameUUID() != null) {
-
+            if (gameProfileDetailsModel.getGameFileDetailsModel().getBrowserFileName() != null) {
 
                 String result = findFilesByExtension(gameProfileDetailsModel);
                 String gameUrl = "https://www.warpedcitadel.com/" + result;
@@ -179,7 +216,7 @@ public class ProfileService {
     private String findFilesByExtension(GameProfileDetailsModel gameProfileDetailsModel) {
 
         String filePath = "games/" + gameProfileDetailsModel.getGameProfileUUID() + "/files/" +
-                gameProfileDetailsModel.getGameFileDetailsModel().getBrowserGameUUID();
+                gameProfileDetailsModel.getGameFileDetailsModel().getBrowserFileName();
 
         String prefix = filePath.endsWith("/") ? filePath : filePath + "/";
 

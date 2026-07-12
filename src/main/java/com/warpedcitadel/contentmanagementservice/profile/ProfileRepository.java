@@ -109,7 +109,7 @@ public class ProfileRepository {
                 gameProfile.setGenreType(resultSet.getString("genre_type"));
                 gameProfile.setGameType(resultSet.getString("game_type_name"));
                 gameProfile.setCreatedDtm(resultSet.getString("created_dtm"));
-                gameFiles.setBrowserGameUUID(resultSet.getString("browser_game"));
+                gameFiles.setBrowserFileName(resultSet.getString("browser_game"));
                 gameImages.setCoverImg(resultSet.getString("cover_img"));
                 gameProfile.setDisplayName(resultSet.getString("display_name"));
                 gameProfile.setUserUUID(resultSet.getString("user_uuid"));
