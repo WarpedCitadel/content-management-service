@@ -69,7 +69,7 @@ public class TrendingService {
 
         for (int i = 0; trendingGameList.size() > i; i++) {
 
-            String gameProfileUUID = trendingGameList.getFirst().getGameProfileUUID();
+            String gameProfileUUID = trendingGameList.get(i).getGameProfileUUID();
             String coverImg = trendingGameList.get(i).getCoverImg();
 
             String result = generateGameImageUrl(gameProfileUUID, coverImg);
@@ -102,7 +102,7 @@ public class TrendingService {
 
     private String generateGameImageUrl(String gameProfileUUID, String coverImg) {
 
-        String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileUUID +
+        String imageUrl = "images/games/" + gameProfileUUID +
                     "/gameImages/" + coverImg;
 
         String coverImgURl = cloudFrontCookieMaker.generateSignedUrl(imageUrl);
