@@ -6,10 +6,12 @@ import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel
 import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -177,7 +179,7 @@ public class ProfileService {
 
                 for (int i = 0; gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size() > i; i++) {
 
-                    String gameUrl = "https://www.warpedcitadel.com/games/" + gameProfileDetailsModel.getGameProfileUUID() +
+                    String gameUrl = "games/" + gameProfileDetailsModel.getGameProfileUUID() +
                             "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
                     String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
 
@@ -200,7 +202,9 @@ public class ProfileService {
             if (gameProfileDetailsModel.getGameFileDetailsModel().getBrowserFileName() != null) {
 
                 String result = findFilesByExtension(gameProfileDetailsModel);
-                String gameUrl = "https://www.warpedcitadel.com/" + result;
+                String encodedKey = UriUtils.encodePath(result, StandardCharsets.UTF_8);
+
+                String gameUrl = "https://www.warpedcitadel.com/" + encodedKey;
 
                 return gameUrl;
             }
@@ -248,7 +252,7 @@ public class ProfileService {
 
     private String generateGameCoverUrl(GameProfileDetailsModel gameProfileDetailsModel) {
 
-        String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
+        String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                 "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getCoverImg();
 
         return cloudFrontCookieMaker.generateSignedUrl(imageUrl);
@@ -258,12 +262,15 @@ public class ProfileService {
 
         List<String> gameImageUrls = new ArrayList<>();
 
-        for (int i = 0; gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size() > i; i++) {
+        if (gameProfileDetailsModel.getGameProfileImagesModel().getGameImg() != null) {
 
-            String imageUrl = "https://www.warpedcitadel.com/images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
-                    "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
+            for (int i = 0; gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size() > i; i++) {
 
-            gameImageUrls.add(cloudFrontCookieMaker.generateSignedUrl(imageUrl));
+                String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
+                        "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
+
+                gameImageUrls.add(cloudFrontCookieMaker.generateSignedUrl(imageUrl));
+            }
         }
 
         return gameImageUrls;

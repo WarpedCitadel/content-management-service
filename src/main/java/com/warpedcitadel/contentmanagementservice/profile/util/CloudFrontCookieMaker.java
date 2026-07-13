@@ -5,6 +5,7 @@ import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetails
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 import software.amazon.awssdk.services.cloudfront.CloudFrontUtilities;
 import software.amazon.awssdk.services.cloudfront.model.CannedSignerRequest;
 
@@ -67,9 +68,11 @@ public class CloudFrontCookieMaker {
 
             Path privateKeyPath = privateKeyResource.getFile().toPath();
 
+            String encodedKey = UriUtils.encodePath(objectKey, StandardCharsets.UTF_8);
+
             CannedSignerRequest request =
                     CannedSignerRequest.builder()
-                            .resourceUrl(objectKey)
+                            .resourceUrl(cloudFrontDomain + encodedKey)
                             .privateKey(privateKeyPath)
                             .keyPairId(keyPair)
                             .expirationDate(
