@@ -109,7 +109,6 @@ public class ProfileRepository {
                 gameProfile.setGenreType(resultSet.getString("genre_type"));
                 gameProfile.setGameType(resultSet.getString("game_type_name"));
                 gameProfile.setCreatedDtm(resultSet.getString("created_dtm"));
-                gameFiles.setBrowserFileName(resultSet.getString("browser_game"));
                 gameImages.setCoverImg(resultSet.getString("cover_img"));
                 gameProfile.setDisplayName(resultSet.getString("display_name"));
                 gameProfile.setUserUUID(resultSet.getString("user_uuid"));
@@ -126,6 +125,19 @@ public class ProfileRepository {
                         fileNameList.add(fileName);
                     }
                     gameFiles.setFileName(fileNameList);
+                }
+
+                List<Integer> fileOSList = new ArrayList<>();
+                Array fileOSArray = resultSet.getArray("file_os");
+
+                if (fileNameArray != null) {
+                    Short[] fileOS = (Short[]) fileOSArray.getArray();
+
+                    for (int file : fileOS) {
+
+                        fileOSList.add(file);
+                    }
+                    gameFiles.setFileOS(fileOSList);
                 }
 
                 List<String> platformOSList = new ArrayList<>(4);

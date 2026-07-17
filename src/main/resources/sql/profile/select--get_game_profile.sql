@@ -12,13 +12,12 @@ sel_game_file_cte AS (
 		SELECT
 		gf.game_profile_id,
 		array_agg(gf.file_name)
-			filter (WHERE gf.isbrowser = FALSE)
 			AS file_name,
 		array_agg(gf.file_uuid)
-		filter (WHERE gf.isbrowser = FALSE)
 			AS file_uuid,
-		array_agg(gf.status_type_id)
-		filter (WHERE gf.isbrowser = FALSE)
+		array_agg(gf.status_type_id),
+		array_agg(gf.platform_id)
+			AS file_os
 	FROM wc01.game_file gf
 	where gf.status_type_id = 4
 	GROUP BY gf.game_profile_id
@@ -41,8 +40,8 @@ SELECT DISTINCT
 	gt.game_type_name,
 	sp.platform_os,
 	gp.created_dtm,
-	gf.file_name AS browser_game,
 	sg.file_name,
+	sg.file_os,
 	gi.file_name AS cover_img,
 	si.game_img,
 	COALESCE(aup.display_name, au.username)
@@ -53,7 +52,7 @@ INNER JOIN sel_game_file_cte sg
 	ON gp.id = sg.game_profile_id
 LEFT JOIN wc01.game_file gf
 	ON gp.id = gf.game_profile_id
-	and isbrowser = true
+	and gf.platform_id = 1
 	and gf.status_type_id = 4
 INNER JOIN wc01.app_user au
 	ON gp.app_user_id = au.id

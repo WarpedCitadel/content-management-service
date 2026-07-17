@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -87,7 +86,7 @@ public class ProfileService {
         GameProfileDetailsModel gameProfileModel = profileRepository.getGameProfile(gameProfileUUID);
 
         if (gameProfileModel == null) {
-            throw new RuntimeException("Request game profile does not exist!: " + gameProfileUUID);
+            throw new RuntimeException("Requested game profile ID of : " + gameProfileUUID + " does not exist");
         }
 
         GameFileDetailsDto gameFiles = new GameFileDetailsDto(
@@ -168,30 +167,39 @@ public class ProfileService {
         } while (continuationToken != null);
     }
 
+
     // ## HELPER FUNCTIONS ##
-    private HashMap<String, String> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
+    private List<GameFilesDto> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
 
-        HashMap<String, String> gameFiles = new HashMap<>();
-
+        List<GameFilesDto> files = new ArrayList<>();
         if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName() != null) {
 
             try {
 
                 for (int i = 0; gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size() > i; i++) {
 
+                    String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
+                    int fileOS = gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().get(i);
                     String gameUrl = "games/" + gameProfileDetailsModel.getGameProfileUUID() +
                             "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
-                    String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
 
-                    gameFiles.put(gameFileName, cloudFrontCookieMaker.generateSignedUrl(gameUrl));
+                    GameFilesDto file = new GameFilesDto(
+                            gameFileName,
+                            fileOS,
+                            cloudFrontCookieMaker.generateSignedUrl(gameUrl)
+                    );
+
+                    files.add(file);
                 }
+
+                return files;
             } catch (Exception exception) {
 
                 throw new RuntimeException("Failed to generate file url for game: " + gameProfileDetailsModel.getTitle());
             }
         }
 
-        return gameFiles;
+        return null;
     }
 
 
@@ -199,16 +207,21 @@ public class ProfileService {
 
         try {
 
-            if (gameProfileDetailsModel.getGameFileDetailsModel().getBrowserFileName() != null) {
+            for (int i = 0; gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().size() > i; i++) {
 
-                String result = findFilesByExtension(gameProfileDetailsModel);
-                String encodedKey = UriUtils.encodePath(result, StandardCharsets.UTF_8);
+                if (gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().get(i) == 1) {
 
-                String gameUrl = "https://www.warpedcitadel.com/" + encodedKey;
+                    if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i) != null) {
 
-                return gameUrl;
+                        int index = i;
+                        String result = findFilesByExtension(gameProfileDetailsModel, index);
+                        String encodedKey = UriUtils.encodePath(result, StandardCharsets.UTF_8);
+
+                        String gameUrl = "https://www.warpedcitadel.com/" + encodedKey;
+                        return gameUrl;
+                    }
+                }
             }
-
             return null;
         } catch (Exception exception) {
 
@@ -217,10 +230,10 @@ public class ProfileService {
     }
 
 
-    private String findFilesByExtension(GameProfileDetailsModel gameProfileDetailsModel) {
+    private String findFilesByExtension(GameProfileDetailsModel gameProfileDetailsModel, int index) {
 
         String filePath = "games/" + gameProfileDetailsModel.getGameProfileUUID() + "/files/" +
-                gameProfileDetailsModel.getGameFileDetailsModel().getBrowserFileName();
+                gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(index);
 
         String prefix = filePath.endsWith("/") ? filePath : filePath + "/";
 

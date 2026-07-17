@@ -1,8 +1,8 @@
 package com.warpedcitadel.contentmanagementservice.profile.dto;
 
-import java.util.HashMap;
+import java.util.List;
 
 public record GameFileDetailsDto(
         String browserGameURL,
-        HashMap<String, String> files
+        List<GameFilesDto> files
 ) {}

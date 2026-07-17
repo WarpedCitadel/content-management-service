@@ -4,33 +4,34 @@ import java.util.List;
 
 public class GameFileDetailsModel {
 
-    String browserFileName;
     List<String> fileName;
+    List<Integer> fileOS;
 
 
     public GameFileDetailsModel() {
 
     }
 
-    public GameFileDetailsModel(String browserFileName, List<String> fileName) {
-        this.browserFileName = browserFileName;
+    public GameFileDetailsModel(List<String> fileName, List<Integer> fileOS) {
         this.fileName = fileName;
+        this.fileOS = fileOS;
     }
 
-
-    public String getBrowserFileName() {
-        return browserFileName;
-    }
 
     public List<String> getFileName() {
         return fileName;
     }
 
-    public void setBrowserFileName(String browserFileName) {
-        this.browserFileName = browserFileName;
+    public List<Integer> getFileOS() {
+        return fileOS;
     }
+
 
     public void setFileName(List<String> fileName) {
         this.fileName = fileName;
+    }
+
+    public void setFileOS(List<Integer> fileOS) {
+        this.fileOS = fileOS;
     }
 }
