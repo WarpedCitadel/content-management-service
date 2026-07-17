@@ -4,5 +4,5 @@ import java.util.List;
 
 public record GameProfileImageDto(
         String coverImages,
-        List<String>gameImages
+        List<String> gameImages
 ) {}
