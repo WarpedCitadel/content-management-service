@@ -3,7 +3,6 @@ package com.warpedcitadel.contentmanagementservice.profile.util;
 import com.warpedcitadel.contentmanagementservice.profile.dto.CloudFrontCookie;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 import software.amazon.awssdk.services.cloudfront.CloudFrontUtilities;
@@ -12,6 +11,7 @@ import software.amazon.awssdk.services.cloudfront.model.CannedSignerRequest;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -23,8 +23,8 @@ import java.util.Base64;
 @Service
 public class CloudFrontCookieMaker {
 
-    @Value("classpath:keys/private_key.pem")
-    private Resource privateKeyResource;
+    @Value("${cloudfront.private-key}")
+    private String privateKeyPath;
 
     @Value("${cloud.aws.keypair}")
     private String keyPair;
@@ -66,14 +66,14 @@ public class CloudFrontCookieMaker {
 
         try {
 
-            Path privateKeyPath = privateKeyResource.getFile().toPath();
+            Path key = Paths.get(privateKeyPath);
 
             String encodedKey = UriUtils.encodePath(objectKey, StandardCharsets.UTF_8);
 
             CannedSignerRequest request =
                     CannedSignerRequest.builder()
                             .resourceUrl(cloudFrontDomain + encodedKey)
-                            .privateKey(privateKeyPath)
+                            .privateKey(key)
                             .keyPairId(keyPair)
                             .expirationDate(
                                     Instant.now().plus(Duration.ofHours(2)))
@@ -142,7 +142,7 @@ public class CloudFrontCookieMaker {
 
             String key =
                     Files.readString(
-                            privateKeyResource.getFile().toPath());
+                            Paths.get(privateKeyPath));
 
             key = key
                     .replace(

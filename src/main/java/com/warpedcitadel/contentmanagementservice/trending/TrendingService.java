@@ -64,7 +64,7 @@ public class TrendingService {
         attributesList.add(limit + 1);
         attributesList.add(offSet);
 
-        List<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(pageable, attributesList);
+        List<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(attributesList);
 
 
         for (int i = 0; trendingGameList.size() > i; i++) {

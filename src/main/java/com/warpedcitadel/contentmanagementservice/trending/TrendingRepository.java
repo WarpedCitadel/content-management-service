@@ -2,7 +2,6 @@ package com.warpedcitadel.contentmanagementservice.trending;
 
 import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
 import com.warpedcitadel.contentmanagementservice.util.SQLFileReader;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -23,7 +22,7 @@ public class TrendingRepository {
     }
 
 
-    protected List<TrendingGamesModel> getTrendingGames(Pageable pageable, List<Object> attributesList) {
+    protected List<TrendingGamesModel> getTrendingGames(List<Object> attributesList) {
 
         String selectSQL = loadSQL.loadSQL("/trending/select--get_trending_games.sql");
 

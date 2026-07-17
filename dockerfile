@@ -25,9 +25,11 @@ RUN apk add --no-cache ca-certificates
 
 COPY --from=jre-builder /custom-jre /opt/java
 COPY --from=builder /app/target/*.jar /app/content-management-service-0.0.1-SNAPSHOT.jar
+COPY keys/private_key.pem /app/keys/private_key.pem
 
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+ENV CLOUDFRONT_PRIVATE_KEY=/app/keys/private_key.pem
 
 RUN addgroup -S wc_secure_role && adduser -S wc_dev -G wc_secure_role
 USER wc_dev
