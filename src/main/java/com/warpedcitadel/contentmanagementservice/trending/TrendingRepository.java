@@ -54,7 +54,7 @@ public class TrendingRepository {
                 TrendingGamesModel game = new TrendingGamesModel();
 
                 game.setGameProfileUUID(resultSet.getString("game_profile_uuid"));
-                game.setCoverImgUUID(resultSet.getString("file_name"));
+                game.setCoverImage(resultSet.getString("file_name"));
                 game.setTitle(resultSet.getString("title"));
                 game.setShortDesc(resultSet.getString("short_desc"));
                 game.setGenre(resultSet.getString("genre_type"));

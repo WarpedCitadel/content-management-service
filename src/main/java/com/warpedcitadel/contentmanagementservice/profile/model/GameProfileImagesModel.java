@@ -4,34 +4,34 @@ import java.util.List;
 
 public class GameProfileImagesModel {
 
-    private String coverImg;
-    private List<String> gameImg;
+    private String coverImage;
+    private List<String> gameImage;
 
     public GameProfileImagesModel() {
 
     }
 
-    public GameProfileImagesModel(String coverImg, List<String> gameImg) {
+    public GameProfileImagesModel(String coverImage, List<String> gameImage) {
 
-        this.coverImg = coverImg;
-        this.gameImg = gameImg;
+        this.coverImage = coverImage;
+        this.gameImage = gameImage;
     }
 
 
     public String getCoverImg() {
-        return coverImg;
+        return coverImage;
     }
 
     public List<String> getGameImg() {
-        return gameImg;
+        return gameImage;
     }
 
 
-    public void setCoverImg(String coverImg) {
-        this.coverImg = coverImg;
+    public void setCoverImg(String coverImage) {
+        this.coverImage = coverImage;
     }
 
-    public void setGameImg(List<String> gameImg) {
-        this.gameImg = gameImg;
+    public void setGameImg(List<String> gameImage) {
+        this.gameImage = gameImage;
     }
 }

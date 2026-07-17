@@ -70,11 +70,11 @@ public class TrendingService {
         for (int i = 0; trendingGameList.size() > i; i++) {
 
             String gameProfileUUID = trendingGameList.get(i).getGameProfileUUID();
-            String coverImg = trendingGameList.get(i).getCoverImg();
+            String coverImg = trendingGameList.get(i).getCoverImage();
 
             String result = generateGameImageUrl(gameProfileUUID, coverImg);
 
-            trendingGameList.get(i).setCoverImgUUID(result);
+            trendingGameList.get(i).setCoverImage(result);
         }
 
         boolean hasNext = trendingGameList.size() > pageable.getPageSize();
