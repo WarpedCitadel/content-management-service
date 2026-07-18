@@ -11,6 +11,7 @@ public class TrendingGamesModel {
     private String genre;
     private List<String> platformOS;
     private String createdDtm;
+    private String displayName;
 
 
     public TrendingGamesModel() {
@@ -18,7 +19,8 @@ public class TrendingGamesModel {
     }
 
     public TrendingGamesModel(String gameProfileUUID, String coverImage, String title,
-                              String shortDesc, String genre, List<String> platformOS, String createdDtm) {
+                              String shortDesc, String genre, List<String> platformOS, String createdDtm,
+                              String displayName) {
 
         this.gameProfileUUID = gameProfileUUID;
         this.coverImage = coverImage;
@@ -27,6 +29,7 @@ public class TrendingGamesModel {
         this.genre = genre;
         this.platformOS = platformOS;
         this.createdDtm = createdDtm;
+        this.displayName = displayName;
     }
 
 
@@ -58,6 +61,10 @@ public class TrendingGamesModel {
         return createdDtm;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
 
     public void setGameProfileUUID(String gameProfileUUID) {
         this.gameProfileUUID = gameProfileUUID;
@@ -85,5 +92,9 @@ public class TrendingGamesModel {
 
     public void setCreatedDtm(String createdDtm) {
         this.createdDtm = createdDtm;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

@@ -59,6 +59,7 @@ public class TrendingRepository {
                 game.setShortDesc(resultSet.getString("short_desc"));
                 game.setGenre(resultSet.getString("genre_type"));
                 game.setCreatedDtm(resultSet.getString("created_dtm"));
+                game.setDisplayName(resultSet.getString("display_name"));
 
                 List<String> platformOSList = new ArrayList<>();
                 Array osArray = resultSet.getArray("platform_os");
@@ -75,7 +76,8 @@ public class TrendingRepository {
             }
 
         } catch (SQLException exception) {
-            throw new RuntimeException("Failed to retrieve list of trending games");
+            exception.printStackTrace();
+//            throw new RuntimeException("Failed to retrieve list of trending games");
         }
 
         return trendingGameList;
