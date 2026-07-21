@@ -76,8 +76,7 @@ public class TrendingRepository {
             }
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
-//            throw new RuntimeException("Failed to retrieve list of trending games");
+            throw new RuntimeException("Failed to retrieve list of trending games");
         }
 
         return trendingGameList;

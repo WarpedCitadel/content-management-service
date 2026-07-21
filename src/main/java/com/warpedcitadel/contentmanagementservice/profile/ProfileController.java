@@ -46,7 +46,7 @@ public class ProfileController {
 
 
     @PutMapping("/updateGameProfile")
-    public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody  GameProfileDto gameProfile,
+    public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody GameProfileDto gameProfile,
                                                                                 WebRequest request) {
 
         profileService.updateGameProfile(gameProfile);
