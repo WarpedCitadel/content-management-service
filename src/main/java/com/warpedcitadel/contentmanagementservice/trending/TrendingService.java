@@ -7,6 +7,8 @@ import com.warpedcitadel.contentmanagementservice.trending.dto.SlicedResponse;
 import com.warpedcitadel.contentmanagementservice.trending.dto.TrendingGamesDto;
 import com.warpedcitadel.contentmanagementservice.trending.model.SearchAttributesModel;
 import com.warpedcitadel.contentmanagementservice.trending.model.TrendingGamesModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,8 @@ import java.util.List;
 public class TrendingService {
 
     private final TrendingRepository trendingRepository;
-    private final CloudFrontCookieMaker cloudFrontCookieMaker; // Make this class universal
+    private final CloudFrontCookieMaker cloudFrontCookieMaker;
+    private static final Logger log = LoggerFactory.getLogger(TrendingService.class);
 
     public TrendingService(TrendingRepository trendingRepository, CloudFrontCookieMaker cloudFrontCookieMaker) {
         this.trendingRepository = trendingRepository;
@@ -28,18 +31,14 @@ public class TrendingService {
 
 
     protected TrendingGamesDto getGameProfiles(Pageable pageable, SearchAttributesDto attributesDto) {
-
         int offSet = pageable.getPageNumber() * pageable.getPageSize();
         int limit = pageable.getPageSize();
-
+        long start = System.currentTimeMillis();
         if (limit >= 51) {
             throw new IllegalArgumentException("Content requested too large");
         }
-
         SearchAttributesModel attributesModel = new SearchAttributesModel();
-
         List<Object> attributesList = new ArrayList<>();
-
         if (attributesDto.title() != null &&
             !attributesDto.title().isEmpty()) {
             attributesModel.setTitle(attributesDto.title().concat("%"));
@@ -65,35 +64,27 @@ public class TrendingService {
         attributesList.add(offSet);
 
         List<TrendingGamesModel> trendingGameList = trendingRepository.getTrendingGames(attributesList);
-
-
         for (int i = 0; trendingGameList.size() > i; i++) {
-
             String gameProfileUUID = trendingGameList.get(i).getGameProfileUUID();
             String coverImg = trendingGameList.get(i).getCoverImage();
-
             String result = generateGameImageUrl(gameProfileUUID, coverImg);
-
             trendingGameList.get(i).setCoverImage(result);
         }
-
         boolean hasNext = trendingGameList.size() > pageable.getPageSize();
-
         if (hasNext) {
             trendingGameList.remove(trendingGameList.size() - 1);
         }
-
         SliceImpl paginatedList = new SliceImpl<>(trendingGameList, pageable, hasNext);
-
         SlicedResponse<TrendingGamesModel> filterData = new SlicedResponse<>(paginatedList);
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("Successfully retrieved ({}) game profiles in ({}) ms",
+                trendingGameList.size(), elapsed);
         return new TrendingGamesDto(filterData);
     }
 
 
     protected GameGenresDto getGameCategories() {
-
         HashMap<Integer, String> genres = trendingRepository.getGameGenres();
-
         return new GameGenresDto(
                 genres
         );
@@ -101,12 +92,9 @@ public class TrendingService {
 
 
     private String generateGameImageUrl(String gameProfileUUID, String coverImg) {
-
         String imageUrl = "images/games/" + gameProfileUUID +
                     "/gameImages/" + coverImg;
-
         String coverImgURl = cloudFrontCookieMaker.generateSignedUrl(imageUrl);
-
         return coverImgURl;
     }
 }

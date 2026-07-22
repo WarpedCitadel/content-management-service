@@ -34,7 +34,6 @@ public class ProfileController {
     @PostMapping("/createGameProfile")
     public ResponseEntity<ApiResponse<String>> createGameProfile(@RequestBody GameProfileDto gameProfile,
                                                                                 WebRequest request) {
-
         String gameProfileUUID = profileService.createGameProfile(gameProfile);
         ApiResponse<String> response = new ApiResponse<>("CREATED",
                 HttpStatus.OK.value(),
@@ -48,11 +47,10 @@ public class ProfileController {
     @PutMapping("/updateGameProfile")
     public ResponseEntity<ApiResponse<String>> updateGameProfile(@RequestBody GameProfileDto gameProfile,
                                                                                 WebRequest request) {
-
         profileService.updateGameProfile(gameProfile);
         ApiResponse<String> response = new ApiResponse<>("UPDATE",
                 HttpStatus.OK.value(),
-                "Game profile updated",
+                "Successfully updated game profile",
                 request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(response, HttpStatus.OK);
