@@ -26,7 +26,7 @@ import java.time.Instant;
 import java.util.Base64;
 
 @Service
-public class CloudFrontCookieMaker {
+public class CloudFrontService {
 
     @Value("${cloudfront.private-key}")
     private String privateKeyPath;
@@ -34,7 +34,7 @@ public class CloudFrontCookieMaker {
     private String keyPair;
 
     private final String cloudFrontDomain = "https://www.warpedcitadel.com/";
-    private static final Logger log = LoggerFactory.getLogger(CloudFrontCookieMaker.class);
+    private static final Logger log = LoggerFactory.getLogger(CloudFrontService.class);
 
 
     public CloudFrontCookie generateSignedCookie(GameProfileDetailsDto gameProfileDetailsDto) {

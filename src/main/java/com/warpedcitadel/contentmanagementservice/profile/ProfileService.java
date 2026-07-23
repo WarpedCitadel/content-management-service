@@ -1,9 +1,10 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.enums.PlatformOS;
 import com.warpedcitadel.contentmanagementservice.profile.dto.*;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileModel;
-import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
+import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +30,14 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final S3Client s3Client;
-    private final CloudFrontCookieMaker cloudFrontCookieMaker;
+    private final CloudFrontService cloudFrontService;
     private static final Logger log = LoggerFactory.getLogger(ProfileService.class);
 
     public ProfileService(ProfileRepository profileRepository, S3Client s3Client,
-                          CloudFrontCookieMaker cloudFrontCookieMaker) {
+                          CloudFrontService cloudFrontService) {
         this.profileRepository = profileRepository;
         this.s3Client = s3Client;
-        this.cloudFrontCookieMaker = cloudFrontCookieMaker;
+        this.cloudFrontService = cloudFrontService;
     }
 
 
@@ -152,25 +153,28 @@ public class ProfileService {
 
 
     private List<GameFilesDto> generateFileUrl(GameProfileDetailsModel gameProfileDetailsModel) {
-        List<GameFilesDto> files = new ArrayList<>();
         int i = 0;
+        int listLimit= gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size();
+        List<GameFilesDto> files = new ArrayList<>(listLimit);
         if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName() != null) {
             try {
-                while (gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size() > i) {
-                    String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
+                while (listLimit > i) {
                     int fileOS = gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().get(i);
-                    String gameUrl = "games/" + gameProfileDetailsModel.getGameProfileUUID() +
-                            "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
-                    GameFilesDto file = new GameFilesDto(
-                            gameFileName,
-                            fileOS,
-                            cloudFrontCookieMaker.generateSignedUrl(gameUrl)
-                    );
-                    files.add(file);
+                    if (fileOS != PlatformOS.BROWSER.getCode()) {
+                        String gameFileName = gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
+                        String gameUrl = "games/" + gameProfileDetailsModel.getGameProfileUUID() +
+                                "/files/" + gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i);
+                        GameFilesDto file = new GameFilesDto(
+                                gameFileName,
+                                fileOS,
+                                cloudFrontService.generateSignedUrl(gameUrl)
+                        );
+                        files.add(file);
+                    }
                     i++;
                 }
                 log.info("Successfully generated ({}) file urls for game profile ID: ({})",
-                        gameProfileDetailsModel.getGameFileDetailsModel().getFileName().size(), gameProfileDetailsModel.getGameProfileUUID());
+                        files.size(), gameProfileDetailsModel.getGameProfileUUID());
                 return files;
             } catch (RuntimeException exception) {
                 log.error("Failed to generate file url for game profile ID: ({}) since file was ({})",
@@ -186,7 +190,7 @@ public class ProfileService {
         int i = 0;
         try {
             while (gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().size() > i) {
-                if (gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().get(i) == 1) {
+                if (gameProfileDetailsModel.getGameFileDetailsModel().getFileOS().get(i) == PlatformOS.BROWSER.getCode()) {
                     if (gameProfileDetailsModel.getGameFileDetailsModel().getFileName().get(i) != null) {
                         int index = i;
                         String result = findFilesByExtension(gameProfileDetailsModel, index);
@@ -236,17 +240,18 @@ public class ProfileService {
     private String generateGameCoverUrl(GameProfileDetailsModel gameProfileDetailsModel) {
         String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                 "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getCoverImg();
-        return cloudFrontCookieMaker.generateSignedUrl(imageUrl);
+        return cloudFrontService.generateSignedUrl(imageUrl);
     }
 
 
     private List<String> generateGameImageUrl(GameProfileDetailsModel gameProfileDetailsModel) {
-        List<String> gameImageUrls = new ArrayList<>();
+        int listLimit = gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size();
+        List<String> gameImageUrls = new ArrayList<>(listLimit);
         if (gameProfileDetailsModel.getGameProfileImagesModel().getGameImg() != null) {
-            for (int i = 0; gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size() > i; i++) {
+            for (int i = 0; listLimit > i; i++) {
                 String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
                         "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
-                gameImageUrls.add(cloudFrontCookieMaker.generateSignedUrl(imageUrl));
+                gameImageUrls.add(cloudFrontService.generateSignedUrl(imageUrl));
             }
         }
         return gameImageUrls;

@@ -1,6 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.trending;
 
-import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
+import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontService;
 import com.warpedcitadel.contentmanagementservice.trending.dto.GameGenresDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SearchAttributesDto;
 import com.warpedcitadel.contentmanagementservice.trending.dto.SlicedResponse;
@@ -21,12 +21,12 @@ import java.util.List;
 public class TrendingService {
 
     private final TrendingRepository trendingRepository;
-    private final CloudFrontCookieMaker cloudFrontCookieMaker;
+    private final CloudFrontService cloudFrontService;
     private static final Logger log = LoggerFactory.getLogger(TrendingService.class);
 
-    public TrendingService(TrendingRepository trendingRepository, CloudFrontCookieMaker cloudFrontCookieMaker) {
+    public TrendingService(TrendingRepository trendingRepository, CloudFrontService cloudFrontService) {
         this.trendingRepository = trendingRepository;
-        this.cloudFrontCookieMaker = cloudFrontCookieMaker;
+        this.cloudFrontService = cloudFrontService;
     }
 
 
@@ -94,7 +94,7 @@ public class TrendingService {
     private String generateGameImageUrl(String gameProfileUUID, String coverImg) {
         String imageUrl = "images/games/" + gameProfileUUID +
                     "/gameImages/" + coverImg;
-        String coverImgURl = cloudFrontCookieMaker.generateSignedUrl(imageUrl);
+        String coverImgURl = cloudFrontService.generateSignedUrl(imageUrl);
         return coverImgURl;
     }
 }

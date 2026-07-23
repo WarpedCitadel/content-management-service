@@ -1,5 +1,6 @@
 package com.warpedcitadel.contentmanagementservice.profile;
 
+import com.warpedcitadel.contentmanagementservice.enums.PlatformOS;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameFileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileDetailsModel;
 import com.warpedcitadel.contentmanagementservice.profile.model.GameProfileImagesModel;
@@ -43,7 +44,7 @@ public class ProfileRepository {
             ResultSet resultSet = insertStatement.executeQuery();
             if (resultSet.next()) {
                 gameProfileUUID = resultSet.getString("game_profile_uuid");
-                log.info("Successfully created game profile for ({}) with game profile ID: ({}) for user profile ID: ({})",
+                log.info("Successfully created game profile, titled ({}) with Game profile ID: ({}) User profile ID: ({})",
                         gameProfileModel.getTitle(), gameProfileUUID, gameProfileModel.getUserUUID());
             }
         } catch (SQLException exception) {
@@ -69,7 +70,7 @@ public class ProfileRepository {
             updateStatement.setInt(7, gameProfileModel.getGameType());
             updateStatement.setArray(8, osArray);
             updateStatement.execute();
-            log.info("Successfully updated game profile for ({}) with game profile ID: ({}) for user profile ID: ({})",
+            log.info("Successfully updated game profile, titled ({}) with Game profile ID: ({}) User profile ID: ({})",
                     gameProfileModel.getTitle(), gameProfileModel.getGameProfileUUID(), gameProfileModel.getUserUUID());
         } catch (SQLException exception) {
             log.error("Failed to update game profile for user profile ID ({}) with game profile ID: ({}) Reason: ({})",
@@ -119,7 +120,7 @@ public class ProfileRepository {
                     gameFiles.setFileOS(fileOSList);
                 }
 
-                List<String> platformOSList = new ArrayList<>(4);
+                List<String> platformOSList = new ArrayList<>(PlatformOS.values().length);
                 Array osArray = resultSet.getArray("platform_os");
                 if (osArray != null) {
                     String[] osList = (String[]) osArray.getArray();
@@ -130,7 +131,7 @@ public class ProfileRepository {
                     gameProfile.setPlatformOS(platformOSList);
                 }
 
-                List<String> gameImgList = new ArrayList<>(5);
+                List<String> gameImgList = new ArrayList<>();
                 Array imgUUIDArray = resultSet.getArray("game_img");
                 if (imgUUIDArray != null) {
                     String[] imgList = (String[]) imgUUIDArray.getArray();

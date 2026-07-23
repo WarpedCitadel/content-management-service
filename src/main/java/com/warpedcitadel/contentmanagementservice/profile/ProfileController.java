@@ -5,7 +5,7 @@ import com.warpedcitadel.contentmanagementservice.profile.dto.CloudFrontCookie;
 import com.warpedcitadel.contentmanagementservice.profile.dto.DeleteGameProfileDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDetailsDto;
 import com.warpedcitadel.contentmanagementservice.profile.dto.GameProfileDto;
-import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontCookieMaker;
+import com.warpedcitadel.contentmanagementservice.profile.util.CloudFrontService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,12 +22,12 @@ import java.time.Instant;
 public class ProfileController {
 
     private final ProfileService profileService;
-    private final CloudFrontCookieMaker cloudFrontCookieMaker;
+    private final CloudFrontService cloudFrontService;
 
     public ProfileController(ProfileService profileService,
-                             CloudFrontCookieMaker cloudFrontCookieMaker) {
+                             CloudFrontService cloudFrontService) {
         this.profileService = profileService;
-        this.cloudFrontCookieMaker = cloudFrontCookieMaker;
+        this.cloudFrontService = cloudFrontService;
     }
 
 
@@ -63,7 +63,7 @@ public class ProfileController {
                                                                                             HttpServletResponse response) {
 
         GameProfileDetailsDto gameProfile = profileService.getGameProfile(uuid);
-        CloudFrontCookie cookie = cloudFrontCookieMaker.generateSignedCookie(gameProfile);
+        CloudFrontCookie cookie = cloudFrontService.generateSignedCookie(gameProfile);
 
         addCookie(response,
                 "CloudFront-Policy",
