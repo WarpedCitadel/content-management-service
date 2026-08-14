@@ -19,13 +19,13 @@ sel_game_file_cte AS (
 		array_agg(gf.platform_id)
 			AS file_os
 	FROM wc01.game_file gf
-	where gf.status_type_id = 4
+	where gf.status_type_id = 5
 	GROUP BY gf.game_profile_id
 ),
 sel_platform_cte AS (
 	SELECT
 		gp.game_profile_id,
-		array_agg(p.platform_type)
+		array_agg(p.id)
 			AS platform_os
 	FROM wc01.game_platform gp
 		INNER JOIN wc01.platform p
@@ -53,7 +53,7 @@ INNER JOIN sel_game_file_cte sg
 LEFT JOIN wc01.game_file gf
 	ON gp.id = gf.game_profile_id
 	and gf.platform_id = 1
-	and gf.status_type_id = 4
+	and gf.status_type_id = 5
 INNER JOIN wc01.app_user au
 	ON gp.app_user_id = au.id
 INNER JOIN wc01.game_genre gg
@@ -62,7 +62,7 @@ INNER JOIN wc01.game_type gt
 	ON gp.game_type_id = gt.id
 LEFT JOIN sel_platform_cte sp
 	ON gp.id = sp.game_profile_id
-INNER JOIN wc01.game_image gi
+LEFT JOIN wc01.game_image gi
 	ON gp.id = gi.game_profile_id
 	AND iscover = TRUE
 LEFT JOIN sel_img_uuid_cte si

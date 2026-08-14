@@ -120,12 +120,12 @@ public class ProfileRepository {
                     gameFiles.setFileOS(fileOSList);
                 }
 
-                List<String> platformOSList = new ArrayList<>(PlatformOS.values().length);
+                List<Integer> platformOSList = new ArrayList<>(PlatformOS.values().length);
                 Array osArray = resultSet.getArray("platform_os");
                 if (osArray != null) {
-                    String[] osList = (String[]) osArray.getArray();
+                    Integer[] osList = (Integer[]) osArray.getArray();
 
-                    for (String osType : osList) {
+                    for (Integer osType : osList) {
                         platformOSList.add(osType);
                     }
                     gameProfile.setPlatformOS(platformOSList);

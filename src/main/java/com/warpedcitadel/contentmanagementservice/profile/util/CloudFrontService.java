@@ -63,23 +63,25 @@ public class CloudFrontService {
 
 
     public String generateSignedUrl(String objectKey) {
-        try {
-            Path key = Paths.get(privateKeyPath);
-            String encodedKey = UriUtils.encodePath(objectKey, StandardCharsets.UTF_8);
-            CannedSignerRequest request =
-                    CannedSignerRequest.builder()
-                            .resourceUrl(cloudFrontDomain + encodedKey)
-                            .privateKey(key)
-                            .keyPairId(keyPair)
-                            .expirationDate(
-                                    Instant.now().plus(Duration.ofHours(2)))
-                            .build();
-            return CloudFrontUtilities.create()
-                    .getSignedUrlWithCannedPolicy(request)
-                    .url();
-        } catch (Exception exception) {
-            log.error("Failed to create presigned URL for storage Object ({}) Reason: ({})",
-                    objectKey, exception.toString());
+        if (objectKey != null) {
+            try {
+                Path key = Paths.get(privateKeyPath);
+                String encodedKey = UriUtils.encodePath(objectKey, StandardCharsets.UTF_8);
+                CannedSignerRequest request =
+                        CannedSignerRequest.builder()
+                                .resourceUrl(cloudFrontDomain + encodedKey)
+                                .privateKey(key)
+                                .keyPairId(keyPair)
+                                .expirationDate(
+                                        Instant.now().plus(Duration.ofHours(2)))
+                                .build();
+                return CloudFrontUtilities.create()
+                        .getSignedUrlWithCannedPolicy(request)
+                        .url();
+            } catch (Exception exception) {
+                log.error("Failed to create presigned URL for storage Object ({}) Reason: ({})",
+                        objectKey, exception.toString());
+            }
         }
         return null;
     }

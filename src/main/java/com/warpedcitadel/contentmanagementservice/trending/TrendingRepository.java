@@ -53,11 +53,11 @@ public class TrendingRepository {
                 game.setGenre(resultSet.getString("genre_type"));
                 game.setCreatedDtm(resultSet.getString("created_dtm"));
                 game.setDisplayName(resultSet.getString("display_name"));
-                List<String> platformOSList = new ArrayList<>();
+                List<Integer> platformOSList = new ArrayList<>();
                 Array osArray = resultSet.getArray("platform_os");
                 if (osArray != null) {
-                    String[] osList = (String[]) osArray.getArray();
-                    for (String osType : osList) {
+                    Integer[] osList = (Integer[]) osArray.getArray();
+                    for (int osType : osList) {
                         platformOSList.add(osType);
                         game.setPlatformOS(platformOSList);
                     }

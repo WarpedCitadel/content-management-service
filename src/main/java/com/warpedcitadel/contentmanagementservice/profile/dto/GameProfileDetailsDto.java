@@ -8,7 +8,7 @@ public record GameProfileDetailsDto(
         String description,
         String genreType,
         String gameType,
-        List<String> platformOS,
+        List<Integer> platformOS,
         String createdDtm,
         GameProfileImageDto images,
         GameFileDetailsDto gameFiles,

@@ -9,7 +9,7 @@ public class GameProfileDetailsModel {
     private String description;
     private String genreType;
     private String gameType;
-    private List<String> platformOS;
+    private List<Integer> platformOS;
     private String createdDtm;
     private String displayName;
     private String userUUID;
@@ -22,7 +22,7 @@ public class GameProfileDetailsModel {
     }
 
     public GameProfileDetailsModel(String gameProfileUUID, String title, String description,
-                                   String genreType, String gameType, List<String> platformOS,
+                                   String genreType, String gameType, List<Integer> platformOS,
                                    String createdDtm, String displayName, String userUUID,
                                    GameProfileImagesModel gameProfileImagesModel, GameFileDetailsModel gameFileDetailsModel) {
 
@@ -59,7 +59,7 @@ public class GameProfileDetailsModel {
         return gameType;
     }
 
-    public List<String> getPlatformOS() {
+    public List<Integer> getPlatformOS() {
         return platformOS;
     }
 
@@ -104,7 +104,7 @@ public class GameProfileDetailsModel {
         this.gameType = gameType;
     }
 
-    public void setPlatformOS(List<String> platformOS) {
+    public void setPlatformOS(List<Integer> platformOS) {
         this.platformOS = platformOS;
     }
 

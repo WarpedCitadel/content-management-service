@@ -9,7 +9,7 @@ public class TrendingGamesModel {
     private String title;
     private String shortDesc;
     private String genre;
-    private List<String> platformOS;
+    private List<Integer> platformOS;
     private String createdDtm;
     private String displayName;
 
@@ -19,7 +19,7 @@ public class TrendingGamesModel {
     }
 
     public TrendingGamesModel(String gameProfileUUID, String coverImage, String title,
-                              String shortDesc, String genre, List<String> platformOS, String createdDtm,
+                              String shortDesc, String genre, List<Integer> platformOS, String createdDtm,
                               String displayName) {
 
         this.gameProfileUUID = gameProfileUUID;
@@ -53,7 +53,7 @@ public class TrendingGamesModel {
         return genre;
     }
 
-    public List<String> getPlatformOS() {
+    public List<Integer> getPlatformOS() {
         return platformOS;
     }
 
@@ -86,7 +86,7 @@ public class TrendingGamesModel {
         this.genre = genre;
     }
 
-    public void setPlatformOS(List<String> platformOS) {
+    public void setPlatformOS(List<Integer> platformOS) {
         this.platformOS = platformOS;
     }
 

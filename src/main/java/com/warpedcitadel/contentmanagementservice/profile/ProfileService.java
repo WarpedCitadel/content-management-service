@@ -238,19 +238,26 @@ public class ProfileService {
 
 
     private String generateGameCoverUrl(GameProfileDetailsModel gameProfileDetailsModel) {
-        String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
-                "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getCoverImg();
-        return cloudFrontService.generateSignedUrl(imageUrl);
+        String coverImg = gameProfileDetailsModel.getGameProfileImagesModel().getCoverImg();
+        if (coverImg != null) {
+            String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
+                    "/gameImages/" + coverImg;
+            return cloudFrontService.generateSignedUrl(imageUrl);
+        }
+        return null;
     }
 
 
     private List<String> generateGameImageUrl(GameProfileDetailsModel gameProfileDetailsModel) {
-        int listLimit = gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size();
-        List<String> gameImageUrls = new ArrayList<>(listLimit);
+        List<String> gameImageUrls = new ArrayList<>();
+        String imageUrl = null;
         if (gameProfileDetailsModel.getGameProfileImagesModel().getGameImg() != null) {
-            for (int i = 0; listLimit > i; i++) {
-                String imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
-                        "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
+            for (int i = 0; gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().size() > i; i++) {
+                if (gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i) != null) {
+
+                     imageUrl = "images/games/" + gameProfileDetailsModel.getGameProfileUUID() +
+                            "/gameImages/" + gameProfileDetailsModel.getGameProfileImagesModel().getGameImg().get(i);
+                }
                 gameImageUrls.add(cloudFrontService.generateSignedUrl(imageUrl));
             }
         }

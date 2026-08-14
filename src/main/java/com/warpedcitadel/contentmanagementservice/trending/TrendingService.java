@@ -92,9 +92,12 @@ public class TrendingService {
 
 
     private String generateGameImageUrl(String gameProfileUUID, String coverImg) {
-        String imageUrl = "images/games/" + gameProfileUUID +
+        if (coverImg != null) {
+            String imageUrl = "images/games/" + gameProfileUUID +
                     "/gameImages/" + coverImg;
-        String coverImgURl = cloudFrontService.generateSignedUrl(imageUrl);
-        return coverImgURl;
+            String coverImgURl = cloudFrontService.generateSignedUrl(imageUrl);
+            return coverImgURl;
+        }
+        return null;
     }
 }
