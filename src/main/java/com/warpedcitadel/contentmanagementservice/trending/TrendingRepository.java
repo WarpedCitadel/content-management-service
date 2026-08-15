@@ -33,8 +33,8 @@ public class TrendingRepository {
             int request;
             for (request = 0; attributesList.size() > request; request++) {
                 if (attributesList.get(request) != null && !attributesList.get(request).equals(-1)) {
-                    if (attributesList.get(request).getClass().equals(String[].class)) {
-                        Array osSQLArray = connection.createArrayOf("text", (String[]) attributesList.get(request));
+                    if (attributesList.get(request).getClass().equals(Integer[].class)) {
+                        Array osSQLArray = connection.createArrayOf("integer", (Integer[]) attributesList.get(request));
                         selectStatement.setArray(request + 1, osSQLArray);
                     }
                     selectStatement.setObject(request + 1, attributesList.get(request));
